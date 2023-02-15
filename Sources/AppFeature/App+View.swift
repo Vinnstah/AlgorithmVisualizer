@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Foundation
 import SwiftUI
 import SortingFeature
+import HomeFeature
 
 public extension App {
     struct View: SwiftUI.View {
@@ -16,18 +17,19 @@ public extension App {
         
         public var body: some SwiftUI.View {
             WithViewStore(self.store, observe: \.selectedTab) { viewStore in
-                TabView(selection: viewStore.binding(send: App.Action.selectedTabChanged)) {
-                    VStack {
-                        Text("Algorithm Visualizer")
-                        
-                        List {
-                            Section {
-                                Text("Sorting Algorithms")
-                                Text("Pathfinding Algorithms")
-                                Text("Search Algorithms")
-                            }
-                        }
-                    }
+                TabView(
+                    selection: viewStore.binding(
+                        send: App.Action.selectedTabChanged)
+                ) {
+                    
+                    Home.View(
+                        store: self.store.scope(
+                            state: \.home,
+                            action: App.Action.home
+                        )
+                    )
+                    .tabItem { Text("Home") }
+                    .tag(Tab.home)
                     
                     Sorting.View(
                         store: self.store.scope(
@@ -35,8 +37,11 @@ public extension App {
                             action: App.Action.sorting
                         )
                     )
-                    .tabItem { Text("Sorting") }
+                    .tabItem {
+                        Label("Sorting", systemImage: "chart.bar.xaxis")
+                    }
                     .tag(Tab.sorting)
+                    
                 }
             }
         }

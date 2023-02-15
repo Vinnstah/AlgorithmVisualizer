@@ -14,6 +14,9 @@ let package = Package(
             name: "AppFeature",
             targets: ["AppFeature"]),
         .library(
+            name: "HomeFeature",
+            targets: ["HomeFeature"]),
+        .library(
             name: "SortingFeature",
             targets: ["SortingFeature"]),
     ],
@@ -21,20 +24,34 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", branch: "prerelease/1.0")
     ],
     targets: [
+        
         .target(
             name: "AppFeature",
             dependencies: [
-            "SortingFeature",
-            tca
+                "HomeFeature",
+                "SortingFeature",
+                tca
             ]),
         .testTarget(
             name: "AppFeatureTests",
             dependencies: ["AppFeature"]),
         
-            .target(
-                name: "SortingFeature",
-                dependencies: [
+        .target(
+            name: "HomeFeature",
+            dependencies: [
                 tca
-                ]),
+            ]),
+        .testTarget(
+            name: "HomeFeatureTests",
+            dependencies: ["HomeFeature"]),
+        
+        .target(
+            name: "SortingFeature",
+            dependencies: [
+                tca
+            ]),
+        .testTarget(
+            name: "SortingFeatureTests",
+            dependencies: ["SortingFeature"]),
     ]
 )
