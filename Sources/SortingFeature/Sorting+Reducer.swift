@@ -10,6 +10,11 @@ public extension Sorting {
             
         case let .arraySizeStepperTapped(value):
             state.arraySize = value
+            
+            return .none
+            
+        case .internal(.arraySizeChanged):
+            state.array.addRandomElementsToArray(count: state.arraySize)
             return .none
         }
     }

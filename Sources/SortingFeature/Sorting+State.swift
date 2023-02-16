@@ -1,4 +1,5 @@
 import Foundation
+import Charts
 import ComposableArchitecture
 
 public struct Sorting: Reducer {
@@ -31,15 +32,22 @@ public struct ChartData: Identifiable, Equatable, Sendable {
     
     public struct Elements: Identifiable, Equatable, Sendable {
         public var value: Int
-        public var id: Int {
-            self.value
-        }
-//        public let id: UUID = UUID()
+        public let id: UUID = UUID()
+        public let currentlyBeingSorted: SortingState
         
-        public init(value: Int) {
+        public init(
+            value: Int,
+            currentlyBeingSorted: SortingState = .unsorted
+        ) {
             self.value = value
+            self.currentlyBeingSorted = currentlyBeingSorted
         }
-        
+        public enum SortingState: String, Sendable, Plottable {
+            
+            case unsorted = "Unsorted"
+            case sortingInProgress = "SortingInProgress"
+            case finishedSorting = "FinishedSorting"
+        }
     }
     
     public mutating func addRandomElementsToArray(count: Double) {
