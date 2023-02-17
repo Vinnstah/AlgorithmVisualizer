@@ -17,6 +17,9 @@ let package = Package(
             name: "HomeFeature",
             targets: ["HomeFeature"]),
         .library(
+            name: "SortingAlgorithmsClient",
+            targets: ["SortingAlgorithmsClient"]),
+        .library(
             name: "SortingFeature",
             targets: ["SortingFeature"]),
     ],
@@ -44,6 +47,12 @@ let package = Package(
         .testTarget(
             name: "HomeFeatureTests",
             dependencies: ["HomeFeature"]),
+        
+            .target(
+                name: "SortingAlgorithmsClient",
+                dependencies: [
+                    tca
+                ]),
         
         .target(
             name: "SortingFeature",

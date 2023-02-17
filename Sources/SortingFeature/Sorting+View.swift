@@ -18,33 +18,36 @@ public extension Sorting {
         public var body: some SwiftUI.View {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
                 GeometryReader { geo in
-                    VStack(alignment: .center) {
+                    HStack(alignment: .center) {
+                        Spacer()
+                        VStack(alignment: .center) {
                             arraySizeSlider(
                                 arraySize: viewStore.binding(
                                     get: { $0.arraySize },
                                     send: { .arraySizeStepperTapped($0) }
                                 )
                             )
-                            .frame(width: geo.size.width/4, alignment: .center)
-                        
-                        HStack {
-                            Text("Insertion Sort")
-                            Text("Selection Sort")
-                            Text("Bubble Sort")
-                            Text("Merge Sort")
-                            Text("Quick Sort")
+                            .frame(width: geo.size.width/4)
                             
+                            HStack {
+                                Text("Insertion Sort")
+                                Text("Selection Sort")
+                                Text("Bubble Sort")
+                                Text("Merge Sort")
+                                Text("Quick Sort")
+                                
+                            }
+                            Charts(data: viewStore.state.array.values)
+                                .frame(width: geo.size.width * 0.8, height: geo.size.height/2)
                         }
-                        Charts(data: testArray.values)
-//                        Charts(data: viewStore.state.array.values)
-                            .frame(width: geo.size.width/2, height: geo.size.height/2, alignment: .center)
+                        Spacer()
                     }
-                    .onAppear {
-                        viewStore.send(.onAppear)
-                    }
-                    .onChange(of: viewStore.state.arraySize) { _ in
-                        viewStore.send(.internal(.arraySizeChanged))
-                    }
+                        .onAppear {
+                            viewStore.send(.onAppear)
+                        }
+                        .onChange(of: viewStore.state.arraySize) { _ in
+                            viewStore.send(.internal(.arraySizeChanged))
+                        }
                 }
             }
         }
@@ -62,13 +65,13 @@ public extension Sorting.View {
                         y: .value("", data.value),
                         stacking: .unstacked
                     )
-                    .foregroundStyle(by: .value("isElementCurrentlyBeingSorted", data.currentlyBeingSorted))
+                    .foregroundStyle(by: .value("isElementCurrentlyBeingSorted", data.sortingStatus))
                 }
             }
             .chartForegroundStyleScale([
-                "SortingInProgress" : Color(.red),
-                "Unsorted": Color(.blue),
-                "FinishedSorting": Color(.green)
+                "SortingInProgress" : .red,
+                "Unsorted": Color(.systemBlue),
+                "FinishedSorting": .green
             ])
             .chartLegend(.hidden)
         }
@@ -85,17 +88,17 @@ public extension Sorting.View {
 }
 
 public let testArray: ChartData = .init(values: [
-    .init(value: 1, currentlyBeingSorted: .unsorted),
-    .init(value: 22, currentlyBeingSorted: .sortingInProgress),
-    .init(value: 41, currentlyBeingSorted: .sortingInProgress),
-    .init(value: 21, currentlyBeingSorted: .finishedSorting),
-    .init(value: 14, currentlyBeingSorted: .unsorted),
-    .init(value: 82, currentlyBeingSorted: .sortingInProgress),
-    .init(value: 42, currentlyBeingSorted: .sortingInProgress),
-    .init(value: 21, currentlyBeingSorted: .finishedSorting),
-    .init(value: 16, currentlyBeingSorted: .unsorted),
-    .init(value: 42, currentlyBeingSorted: .sortingInProgress),
-    .init(value: 76, currentlyBeingSorted: .unsorted),
-    .init(value: 6, currentlyBeingSorted: .finishedSorting),
+    .init(value: 1, sortingStatus: .unsorted),
+    .init(value: 22, sortingStatus: .sortingInProgress),
+    .init(value: 41, sortingStatus: .sortingInProgress),
+    .init(value: 21, sortingStatus: .finishedSorting),
+    .init(value: 14, sortingStatus: .unsorted),
+    .init(value: 82, sortingStatus: .sortingInProgress),
+    .init(value: 42, sortingStatus: .sortingInProgress),
+    .init(value: 21, sortingStatus: .finishedSorting),
+    .init(value: 16, sortingStatus: .unsorted),
+    .init(value: 42, sortingStatus: .sortingInProgress),
+    .init(value: 76, sortingStatus: .unsorted),
+    .init(value: 6, sortingStatus: .finishedSorting),
     
 ])

@@ -28,19 +28,21 @@ public struct ChartData: Identifiable, Equatable, Sendable {
     
     public init(values: [Elements]) {
         self.values = values
+        
+        addRandomElementsToArray(count: 20)
     }
     
     public struct Elements: Identifiable, Equatable, Sendable {
         public var value: Int
         public let id: UUID = UUID()
-        public let currentlyBeingSorted: SortingState
+        public let sortingStatus: SortingState
         
         public init(
             value: Int,
-            currentlyBeingSorted: SortingState = .unsorted
+            sortingStatus: SortingState = .unsorted
         ) {
             self.value = value
-            self.currentlyBeingSorted = currentlyBeingSorted
+            self.sortingStatus = sortingStatus
         }
         public enum SortingState: String, Sendable, Plottable {
             

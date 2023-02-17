@@ -4,25 +4,26 @@ import ComposableArchitecture
 
 @MainActor
 final class SortingFeatureTests: XCTestCase {
-    func onAppearCreatesRandomArrayWith20Elements() async {
+    func testOnAppearCreatesRandomArrayWith20Elements() async {
         let store = TestStore(
             initialState: Sorting.State(),
             reducer: Sorting()
         )
-        
-        await store.send(.onAppear) {
-            $0.array.values = []
-        }
+        await store.send(.onAppear) 
+            
+        XCTAssertEqual(store.state.array.values.count, 20)
     }
     
-    func arraySizeSliderUsed() async {
+    func testArraySizeSliderUsed() async {
         let store = TestStore(
             initialState: Sorting.State.init(),
             reducer: Sorting()
         )
         
-        await store.send(.onAppear) {
-            $0.array.values = []
+        await store.send(.arraySizeStepperTapped(30)) {
+            $0.arraySize = 30
         }
+        
+        XCTAssertEqual(store.state.arraySize, 30)
     }
 }
