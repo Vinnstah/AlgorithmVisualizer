@@ -14,6 +14,9 @@ let package = Package(
             name: "AppFeature",
             targets: ["AppFeature"]),
         .library(
+            name: "ChartModel",
+            targets: ["ChartModel"]),
+        .library(
             name: "HomeFeature",
             targets: ["HomeFeature"]),
         .library(
@@ -39,6 +42,11 @@ let package = Package(
             name: "AppFeatureTests",
             dependencies: ["AppFeature"]),
         
+            .target(
+                name: "ChartModel",
+                dependencies: [
+                ]),
+        
         .target(
             name: "HomeFeature",
             dependencies: [
@@ -51,12 +59,15 @@ let package = Package(
             .target(
                 name: "SortingAlgorithmsClient",
                 dependencies: [
+                    "ChartModel",
                     tca
                 ]),
         
         .target(
             name: "SortingFeature",
             dependencies: [
+                "ChartModel",
+                "SortingAlgorithmsClient",
                 tca
             ]),
         .testTarget(

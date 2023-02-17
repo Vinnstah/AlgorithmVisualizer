@@ -2,6 +2,7 @@ import SwiftUI
 import Foundation
 import ComposableArchitecture
 import Charts
+import ChartModel
 
 public extension Sorting {
     struct View: SwiftUI.View {
@@ -23,17 +24,22 @@ public extension Sorting {
                         VStack(alignment: .center) {
                             arraySizeSlider(
                                 arraySize: viewStore.binding(
-                                    get: { $0.arraySize },
-                                    send: { .arraySizeStepperTapped($0) }
+                                    get: { $0.array.count },
+                                    send: { .internal(.arraySizeStepperTapped($0)) }
                                 )
                             )
                             .frame(width: geo.size.width/4)
                             
                             HStack {
+                                Button(action: {
+                                    viewStore.send(.internal(.mergeSortTapped), animation: .default)
+                                }, label: {
+                                    Text("Merge Sort")
+                                })
+                                
                                 Text("Insertion Sort")
                                 Text("Selection Sort")
                                 Text("Bubble Sort")
-                                Text("Merge Sort")
                                 Text("Quick Sort")
                                 
                             }
@@ -42,12 +48,9 @@ public extension Sorting {
                         }
                         Spacer()
                     }
-                        .onAppear {
-                            viewStore.send(.onAppear)
-                        }
-                        .onChange(of: viewStore.state.arraySize) { _ in
-                            viewStore.send(.internal(.arraySizeChanged))
-                        }
+                    .onAppear {
+                        viewStore.send(.internal(.onAppear))
+                    }
                 }
             }
         }
@@ -87,18 +90,18 @@ public extension Sorting.View {
     }
 }
 
-public let testArray: ChartData = .init(values: [
-    .init(value: 1, sortingStatus: .unsorted),
-    .init(value: 22, sortingStatus: .sortingInProgress),
-    .init(value: 41, sortingStatus: .sortingInProgress),
-    .init(value: 21, sortingStatus: .finishedSorting),
-    .init(value: 14, sortingStatus: .unsorted),
-    .init(value: 82, sortingStatus: .sortingInProgress),
-    .init(value: 42, sortingStatus: .sortingInProgress),
-    .init(value: 21, sortingStatus: .finishedSorting),
-    .init(value: 16, sortingStatus: .unsorted),
-    .init(value: 42, sortingStatus: .sortingInProgress),
-    .init(value: 76, sortingStatus: .unsorted),
-    .init(value: 6, sortingStatus: .finishedSorting),
-    
-])
+//public let testArray: ChartData = .init(values: [
+//    .init(value: 1, sortingStatus: .unsorted),
+//    .init(value: 22, sortingStatus: .sortingInProgress),
+//    .init(value: 41, sortingStatus: .sortingInProgress),
+//    .init(value: 21, sortingStatus: .finishedSorting),
+//    .init(value: 14, sortingStatus: .unsorted),
+//    .init(value: 82, sortingStatus: .sortingInProgress),
+//    .init(value: 42, sortingStatus: .sortingInProgress),
+//    .init(value: 21, sortingStatus: .finishedSorting),
+//    .init(value: 16, sortingStatus: .unsorted),
+//    .init(value: 42, sortingStatus: .sortingInProgress),
+//    .init(value: 76, sortingStatus: .unsorted),
+//    .init(value: 6, sortingStatus: .finishedSorting),
+//
+//])
