@@ -24,7 +24,7 @@ public extension Sorting {
                         VStack(alignment: .center) {
                             arraySizeSlider(
                                 arraySize: viewStore.binding(
-                                    get: { $0.array.count },
+                                    get: { Double($0.array.values.count) },
                                     send: { .internal(.arraySizeStepperTapped($0)) }
                                 )
                             )
@@ -37,14 +37,25 @@ public extension Sorting {
                                     Text("Merge Sort")
                                 })
                                 
+                                Button(action: {
+                                    viewStore.send(.internal(.bubbleSortTapped), animation: .default)
+                                }, label: {
+                                    Text("Bubble Sort")
+                                })
+                                
                                 Text("Insertion Sort")
                                 Text("Selection Sort")
-                                Text("Bubble Sort")
+                                
                                 Text("Quick Sort")
                                 
                             }
                             Charts(data: viewStore.state.array.values)
                                 .frame(width: geo.size.width * 0.8, height: geo.size.height/2)
+                            
+                            VStack {
+                                Text("Time to sort the array:")
+                                Text("\(viewStore.state.timer.description)")
+                            }
                         }
                         Spacer()
                     }

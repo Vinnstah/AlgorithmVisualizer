@@ -10,7 +10,10 @@ public extension Sorting {
             case arraySizeStepperTapped(Double)
             case mergeSortTapped
             case mergeSortResult(TaskResult<[ChartData.Elements]>)
+            case bubbleSortTapped
+            case bubbleSortResult(TaskResult<[ChartData.Elements]>)
             case onAppear
+            case sortingTimer(ContinuousClock.Instant.Duration)
         }
     }
 }

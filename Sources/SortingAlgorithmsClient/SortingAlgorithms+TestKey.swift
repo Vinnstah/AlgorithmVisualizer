@@ -7,12 +7,14 @@ import XCTestDynamicOverlay
 extension SortingAlgorithms {
     
     public static let test = Self(
-        mergeSort: XCTUnimplemented("\(Self.self).mergeSort"))
+        mergeSort: XCTUnimplemented("\(Self.self).mergeSort"),
+        bubbleSort: XCTUnimplemented("\(Self.self).bubbleSort")
+        )
 }
-    
-    extension SortingAlgorithms: TestDependencyKey {
-        public static let testValue = SortingAlgorithms.test
-    }
+
+extension SortingAlgorithms: TestDependencyKey {
+    public static let testValue = SortingAlgorithms.test
+}
 #endif
 
 public extension DependencyValues {

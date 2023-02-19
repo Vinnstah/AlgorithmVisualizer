@@ -17,6 +17,9 @@ let package = Package(
             name: "ChartModel",
             targets: ["ChartModel"]),
         .library(
+            name: "ElementGeneratorClient",
+            targets: ["ElementGeneratorClient"]),
+        .library(
             name: "HomeFeature",
             targets: ["HomeFeature"]),
         .library(
@@ -47,6 +50,13 @@ let package = Package(
                 dependencies: [
                 ]),
         
+            .target(
+                name: "ElementGeneratorClient",
+                dependencies: [
+                    "ChartModel",
+                    tca
+                ]),
+        
         .target(
             name: "HomeFeature",
             dependencies: [
@@ -67,6 +77,7 @@ let package = Package(
             name: "SortingFeature",
             dependencies: [
                 "ChartModel",
+                "ElementGeneratorClient",
                 "SortingAlgorithmsClient",
                 tca
             ]),
