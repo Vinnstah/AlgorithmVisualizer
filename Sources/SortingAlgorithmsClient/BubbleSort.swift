@@ -1,19 +1,25 @@
 import ChartModel
 import Foundation
 
-public func bubble(array: [ChartData.Elements]) async  -> [ChartData.Elements] {
-    fatalError("NOT WORKING YET")
+public func bubble(array: [ChartData.Elements]) async -> [ChartData.Elements] {
     var sortedArray: [ChartData.Elements] = array
     var numberOfChanges: Int = 0
     
     for index in sortedArray.indices {
-        if sortedArray[index] < sortedArray[index + 1] {
-            guard index < (sortedArray.count - 1) && numberOfChanges < 1 else {
+        if index == sortedArray.count - 1 {
+            if numberOfChanges == 0 {
                 return sortedArray
+            } else {
+                return await bubble(array: sortedArray)
             }
+        }
+        if sortedArray[index + 1] < sortedArray[index] {
             sortedArray.swapAt(index, index + 1)
+            sortedArray[index].sortingStatus = .finishedSorting
+            sortedArray[index + 1].sortingStatus = .finishedSorting
             numberOfChanges += 1
         }
+        sortedArray[index].sortingStatus = .finishedSorting
     }
     guard numberOfChanges > 0 else  {
         return sortedArray
