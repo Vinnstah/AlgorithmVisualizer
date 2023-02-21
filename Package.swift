@@ -48,6 +48,7 @@ let package = Package(
             .target(
                 name: "ChartModel",
                 dependencies: [
+                    tca
                 ]),
         
             .target(

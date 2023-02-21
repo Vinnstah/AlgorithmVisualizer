@@ -6,11 +6,11 @@ extension SortingAlgorithms: DependencyKey {
     static public var liveValue: SortingAlgorithms = Self(
         mergeSort: { array in
             return await merge(array)
-        }, bubbleSort:  { array in
+        },
+        bubbleSort:  { array in
             return await bubble(array: array)
-            
         }
-        )
+    )
 }
 
 

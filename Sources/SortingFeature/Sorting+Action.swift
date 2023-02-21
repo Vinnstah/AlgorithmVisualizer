@@ -9,11 +9,13 @@ public extension Sorting {
         public enum InternalAction: Equatable, Sendable {
             case arraySizeStepperTapped(Double)
             case mergeSortTapped
-            case mergeSortResult(TaskResult<[ChartData.Elements]>)
+            case mergeSortResult(TaskResult<ChartData>)
             case bubbleSortTapped
-            case bubbleSortResult(TaskResult<[ChartData.Elements]>)
+            case bubbleSortResult(TaskResult<ChartData>)
             case onAppear
             case sortingTimer(ContinuousClock.Instant.Duration)
+            case toggleErrorPopover(TextState?)
+            case resetArrayTapped
         }
     }
 }

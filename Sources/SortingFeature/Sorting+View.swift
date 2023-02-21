@@ -26,10 +26,15 @@ public extension Sorting {
                                 arraySize: viewStore.binding(
                                     get: { Double($0.array.values.count) },
                                     send: { .internal(.arraySizeStepperTapped($0)) }
-                                )
+                                ),
+                                resetAction: { viewStore.send(.internal(.resetArrayTapped)) }
+                                
                             )
                             .frame(width: geo.size.width/4)
-                            
+                            .popover(isPresented: viewStore.binding(get: { $0.errorPopoverIsShowing}, send:  .internal(.toggleErrorPopover(viewStore.state.popoverTextState)))) {
+                                Text(viewStore.state.popoverTextState ?? TextState(""))
+                                fatalError("Only shows up once")
+                            }
                             HStack {
                                 Button(action: {
                                     viewStore.send(.internal(.mergeSortTapped), animation: .default)
@@ -39,6 +44,7 @@ public extension Sorting {
                                 
                                 Button(action: {
                                     viewStore.send(.internal(.bubbleSortTapped), animation: .default)
+                                    
                                 }, label: {
                                     Text("Bubble Sort")
                                 })
@@ -49,7 +55,8 @@ public extension Sorting {
                                 Text("Quick Sort")
                                 
                             }
-                            Charts(data: viewStore.state.array.values)
+                            
+                            Charts(data: viewStore.state.array.values.elements)
                                 .frame(width: geo.size.width * 0.8, height: geo.size.height/2)
                             
                             VStack {
@@ -93,10 +100,15 @@ public extension Sorting.View {
 }
 
 public extension Sorting.View {
-    func arraySizeSlider(arraySize: Binding<Double>) -> some SwiftUI.View {
+    func arraySizeSlider(arraySize: Binding<Double>, resetAction: @escaping () -> ()) -> some SwiftUI.View {
         VStack {
-            Text("\(Int(arraySize.wrappedValue))")
-            Slider(value: arraySize, in: 1...100, step: 1.0)
+            Text("Array size: \(Int(arraySize.wrappedValue))")
+            HStack {
+                Slider(value: arraySize, in: 1...100, step: 1.0)
+                Button("Reset") {
+                    resetAction()
+                }
+            }
         }
     }
 }
