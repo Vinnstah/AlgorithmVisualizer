@@ -1,10 +1,10 @@
-import ChartModel
 import Foundation
+import UnsortedElements
 
-public func bubble(array: ChartData) async -> ChartData {
-    var sortedArray: ChartData = array
-    var numberOfChanges: Int = 0
-    
+public func bubble(array: UnsortedElements) async -> UnsortedElements {
+    var sortedArray: UnsortedElements = array
+    var numberOfChanges = 0
+
     for index in sortedArray.values.indices {
         if index == sortedArray.values.count - 1 {
             if numberOfChanges == 0 {
@@ -18,10 +18,9 @@ public func bubble(array: ChartData) async -> ChartData {
             numberOfChanges += 1
         }
     }
-    guard numberOfChanges > 0 else  {
+    guard numberOfChanges > 0 else {
         return sortedArray
     }
-    
+
     return await bubble(array: sortedArray)
-    
 }

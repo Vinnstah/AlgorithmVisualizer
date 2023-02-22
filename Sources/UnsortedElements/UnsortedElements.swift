@@ -1,35 +1,35 @@
+import Algorithms
 import Charts
 import Foundation
 import IdentifiedCollections
-import Algorithms
 
 public enum SortingOrder: Sendable, Hashable {
     case increasing
     case decreasing
 }
 
-public struct ChartData: Identifiable, Equatable, Sendable {
-    public let id: UUID = UUID()
+public struct UnsortedElements: Identifiable, Equatable, Sendable {
+    public let id: UUID = .init()
     public var values: IdentifiedArrayOf<Element>
-    
+
     public func isSorted(order: SortingOrder) -> Bool {
         values.isSorted(order: order)
     }
-    
+
     public init(
         values: IdentifiedArrayOf<Element>
     ) {
         self.values = values
     }
-    
+
     public struct Element: Identifiable, Sendable, Comparable {
         public static func < (lhs: Self, rhs: Self) -> Bool {
             return lhs.value < rhs.value
         }
-        
+
         public var value: Int
         public let id: UUID
-        
+
         public init(
             value: Int,
             id: UUID
@@ -53,7 +53,6 @@ public extension Collection where Element: Comparable {
             .map { ($0.first!, $0.last!) }
             .map(compare)
             .lazy
-            .reduce(true, { $0 && $1 })
+            .reduce(true) { $0 && $1 }
     }
 }
-

@@ -17,10 +17,10 @@ public extension App {
                 case let .selectedTabChanged(tab):
                     state.selectedTab = tab
                     return .none
-                    
-                case .home(_):
+
+                case .home:
                     return .none
-                case .sorting(_):
+                case .sorting:
                     return .none
                 }
             }

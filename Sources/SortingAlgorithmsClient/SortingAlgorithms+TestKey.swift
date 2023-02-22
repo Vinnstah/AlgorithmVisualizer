@@ -2,19 +2,18 @@ import Dependencies
 import Foundation
 
 #if DEBUG
-import XCTestDynamicOverlay
+    import XCTestDynamicOverlay
 
-extension SortingAlgorithms {
-    
-    public static let test = Self(
-        mergeSort: XCTUnimplemented("\(Self.self).mergeSort"),
-        bubbleSort: XCTUnimplemented("\(Self.self).bubbleSort")
+    public extension SortingAlgorithms {
+        static let test = Self(
+            mergeSort: XCTUnimplemented("\(Self.self).mergeSort"),
+            bubbleSort: XCTUnimplemented("\(Self.self).bubbleSort")
         )
-}
+    }
 
-extension SortingAlgorithms: TestDependencyKey {
-    public static let testValue = SortingAlgorithms.test
-}
+    extension SortingAlgorithms: TestDependencyKey {
+        public static let testValue = SortingAlgorithms.test
+    }
 #endif
 
 public extension DependencyValues {

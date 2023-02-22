@@ -1,27 +1,25 @@
 import ComposableArchitecture
 import Foundation
-import SwiftUI
-import SortingFeature
 import HomeFeature
+import SortingFeature
+import SwiftUI
 
 public extension App {
     struct View: SwiftUI.View {
-        
         public let store: StoreOf<App>
-        
+
         public init(
             store: StoreOf<App>
         ) {
             self.store = store
         }
-        
+
         public var body: some SwiftUI.View {
             WithViewStore(self.store, observe: \.selectedTab) { viewStore in
                 TabView(
                     selection: viewStore.binding(
                         send: App.Action.selectedTabChanged)
                 ) {
-                    
                     Home.View(
                         store: self.store.scope(
                             state: \.home,
@@ -30,7 +28,7 @@ public extension App {
                     )
                     .tabItem { Text("Home") }
                     .tag(Tab.home)
-                    
+
                     Sorting.View(
                         store: self.store.scope(
                             state: \.sorting,
@@ -41,7 +39,6 @@ public extension App {
                         Label("Sorting", systemImage: "chart.bar.xaxis")
                     }
                     .tag(Tab.sorting)
-                    
                 }
             }
         }

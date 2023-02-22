@@ -1,7 +1,7 @@
-import Foundation
 import ComposableArchitecture
-import SortingFeature
+import Foundation
 import HomeFeature
+import SortingFeature
 
 public extension App {
     enum Action: Equatable {

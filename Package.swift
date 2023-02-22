@@ -15,8 +15,8 @@ let package = Package(
             name: "AppFeature",
             targets: ["AppFeature"]),
         .library(
-            name: "ChartModel",
-            targets: ["ChartModel"]),
+            name: "UnsortedElements",
+            targets: ["UnsortedElements"]),
         .library(
             name: "ElementGeneratorClient",
             targets: ["ElementGeneratorClient"]),
@@ -33,6 +33,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", branch: "prerelease/1.0"),
         .package(url: "https://github.com/apple/swift-algorithms.git", .upToNextMajor(from: "1.0.0")),
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.50.9")
     ],
     targets: [
         
@@ -48,7 +49,7 @@ let package = Package(
             dependencies: ["AppFeature"]),
         
             .target(
-                name: "ChartModel",
+                name: "UnsortedElements",
                 dependencies: [
                     algorithms,
                     tca
@@ -57,7 +58,7 @@ let package = Package(
             .target(
                 name: "ElementGeneratorClient",
                 dependencies: [
-                    "ChartModel",
+                    "UnsortedElements",
                     tca
                 ]),
         
@@ -73,14 +74,14 @@ let package = Package(
             .target(
                 name: "SortingAlgorithmsClient",
                 dependencies: [
-                    "ChartModel",
+                    "UnsortedElements",
                     tca
                 ]),
         
         .target(
             name: "SortingFeature",
             dependencies: [
-                "ChartModel",
+                "UnsortedElements",
                 "ElementGeneratorClient",
                 "SortingAlgorithmsClient",
                 tca

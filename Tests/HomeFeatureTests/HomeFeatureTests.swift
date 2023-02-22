@@ -1,9 +1,8 @@
-import XCTest
-@testable import HomeFeature
 import ComposableArchitecture
+@testable import HomeFeature
+import XCTest
 
 @MainActor
 final class HomeFeatureTests: XCTestCase {
-    func defaultTest() async {
-    }
+    func defaultTest() async {}
 }

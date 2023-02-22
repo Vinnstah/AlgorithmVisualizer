@@ -1,6 +1,6 @@
 import ComposableArchitecture
-import SortingFeature
 import HomeFeature
+import SortingFeature
 
 public struct App: Reducer {
     public init() {}
@@ -11,7 +11,7 @@ public extension App {
         public var sorting: Sorting.State
         public var home: Home.State
         public var selectedTab: Tab
-        
+
         public init(
             sorting: Sorting.State = .init(),
             home: Home.State = .init(),

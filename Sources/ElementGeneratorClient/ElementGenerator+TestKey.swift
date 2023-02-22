@@ -2,17 +2,17 @@ import Dependencies
 import Foundation
 
 #if DEBUG
-import XCTestDynamicOverlay
+    import XCTestDynamicOverlay
 
-extension ElementGenerator {
-    public static let test = Self(
-        generateElements: XCTUnimplemented("\(Self.self).elementGenerator")
-    )
-}
+    public extension ElementGenerator {
+        static let test = Self(
+            generate: XCTUnimplemented("\(Self.self).elementGenerator")
+        )
+    }
 
-extension ElementGenerator: TestDependencyKey {
-    public static let testValue = ElementGenerator.test
-}
+    extension ElementGenerator: TestDependencyKey {
+        public static let testValue = ElementGenerator.test
+    }
 #endif
 
 public extension DependencyValues {

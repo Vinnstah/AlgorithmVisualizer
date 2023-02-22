@@ -1,8 +1,8 @@
-import ChartModel
 import Foundation
+import UnsortedElements
 
-public struct ElementGenerator {
-    public typealias ElementGeneration = @Sendable (Int) -> [ChartData.Element]
-    
-    public let generateElements: ElementGeneration
+public struct ElementGenerator: Sendable {
+    public typealias Generate = @Sendable (UInt) async -> UnsortedElements
+
+    public var generate: Generate
 }

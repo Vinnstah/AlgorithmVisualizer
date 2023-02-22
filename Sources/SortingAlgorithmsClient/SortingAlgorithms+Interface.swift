@@ -1,11 +1,11 @@
 import Foundation
-import ChartModel
 import IdentifiedCollections
+import UnsortedElements
 
 public struct SortingAlgorithms {
-    public typealias MergeSortInput = @Sendable (ChartData) async -> ChartData
-    public typealias BubbleSortInput = @Sendable (ChartData) async -> ChartData
-    
+    public typealias MergeSortInput = @Sendable (UnsortedElements) async -> UnsortedElements
+    public typealias BubbleSortInput = @Sendable (UnsortedElements) async -> UnsortedElements
+
     public let mergeSort: MergeSortInput
     public let bubbleSort: BubbleSortInput
 }

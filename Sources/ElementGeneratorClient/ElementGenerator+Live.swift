@@ -1,65 +1,27 @@
 import ComposableArchitecture
-import Foundation
-import ChartModel
 import Dependencies
+import Foundation
+import UnsortedElements
 
 extension ElementGenerator: DependencyKey {
     public static var liveValue: ElementGenerator {
         @Dependency(\.uuid) var uuid
         return Self(
-            generateElements: { count in
-                generateRandomElements(repeting: count)
+            generate: { count in
+                generateRandomElements(count)
             }
         )
-        @Sendable func generateRandomElements(repeting count: Int) -> [ChartData.Element] {
-            var values: [ChartData.Element] = []
-            for _ in 1...count {
+        @Sendable func generateRandomElements(_ count: UInt) -> UnsortedElements {
+            var values: [UnsortedElements.Element] = []
+            for _ in 1 ... count {
                 values.append(
-                    ChartData.Element(
-                        value: .random(in: 0...100),
-                        id: uuid.callAsFunction()
+                    UnsortedElements.Element(
+                        value: .random(in: 0 ... 100),
+                        id: uuid()
                     )
                 )
             }
-            return values
+            return .init(values: .init(uniqueElements: values, id: \.id))
         }
     }
-    }
-    
-    
-//
-//    static public func liveValue() -> ElementGenerator {
-//
-//        @Dependency(\.uuid) var uuid
-//        return Self(
-//            elementGenerator: { count, ids in
-//                generateRandomElements(repeting: count, id: ids )
-//            }
-//        )
-//        @Sendable func generateRandomElements(repeting count: Int, id: UUID) -> [ChartData.Element] {
-//            var values: [ChartData.Element] = []
-//            for _ in 1...count {
-//                values.append(
-//                    ChartData.Element(
-//                        value: .random(in: 0...100),
-//                        id: uuid.callAsFunction()
-//                    )
-//                )
-//            }
-//            return values
-//        }
-//    }
-//}
-
-//public func generateRandomElements(repeting count: Int, id: UUID) -> [ChartData.Element] {
-//    var values: [ChartData.Element] = []
-//    for _ in 1...count {
-//        values.append(
-//            ChartData.Element(
-//                value: .random(in: 0...100),
-//                id: <#UUID#>
-//            )
-//        )
-//    }
-//    return values
-//}
+}
