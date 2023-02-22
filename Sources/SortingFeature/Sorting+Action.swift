@@ -13,8 +13,8 @@ public extension Sorting {
             case bubbleSortTapped
             case bubbleSortResult(TaskResult<ChartData>)
             case onAppear
-            case sortingTimer(ContinuousClock.Instant.Duration)
-            case toggleErrorPopover(TextState?)
+            case sortingTimer(ContinuousClock.Instant.Duration, SortingTimes.SortingTypes)
+            case toggleErrorPopover
             case resetArrayTapped
         }
     }

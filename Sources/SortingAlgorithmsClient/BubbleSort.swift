@@ -8,6 +8,7 @@ public func bubble(array: ChartData) async -> ChartData {
     for index in sortedArray.values.indices {
         if index == sortedArray.values.count - 1 {
             if numberOfChanges == 0 {
+                sortedArray.sorted = true
                 return sortedArray
             } else {
                 return await bubble(array: sortedArray)

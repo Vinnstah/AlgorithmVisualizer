@@ -19,8 +19,6 @@ public func merge(_ array: ChartData) async -> ChartData {
         secondHalf.values[$0].sortingStatus = .sortingInProgress
     }
     
-    print("first: \(firstHalf)")
-    print("second: \(secondHalf)")
     return await mergeSort(&firstHalf, &secondHalf)
 }
 

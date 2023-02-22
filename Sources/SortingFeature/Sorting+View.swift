@@ -22,19 +22,25 @@ public extension Sorting {
                     HStack(alignment: .center) {
                         Spacer()
                         VStack(alignment: .center) {
-                            arraySizeSlider(
+                            ArraySizeSlider(
                                 arraySize: viewStore.binding(
                                     get: { Double($0.array.values.count) },
                                     send: { .internal(.arraySizeStepperTapped($0)) }
                                 ),
-                                resetAction: { viewStore.send(.internal(.resetArrayTapped)) }
-                                
+                                resetAction: { viewStore.send(.internal(.resetArrayTapped)) },
+                                frameWidth: geo.size.width/4,
+                                binding: viewStore.binding(
+                                    get: { $0.errorPopoverIsShowing},
+                                    send:  .internal(.toggleErrorPopover))
                             )
-                            .frame(width: geo.size.width/4)
-                            .popover(isPresented: viewStore.binding(get: { $0.errorPopoverIsShowing}, send:  .internal(.toggleErrorPopover(viewStore.state.popoverTextState)))) {
-                                Text(viewStore.state.popoverTextState ?? TextState(""))
-                                fatalError("Only shows up once")
-                            }
+                            //                            .popover(isPresented:
+                            //                                        viewStore.binding(
+                            //                                            get: { $0.errorPopoverIsShowing},
+                            //                                            send:  .internal(.toggleErrorPopover))
+                            //                            ) {
+                            //                                Text("The array is already sorted \n Please reset the array")
+                            //                            }
+                            
                             HStack {
                                 Button(action: {
                                     viewStore.send(.internal(.mergeSortTapped), animation: .default)
@@ -63,16 +69,29 @@ public extension Sorting {
                                 Text("Time to sort the array:")
                                 Text("\(viewStore.state.timer.description)")
                             }
+                            
+                            List {
+                                ForEach(viewStore.state.historicalSortingTimes.times.measurement.keys.sorted(), id: \.self) { key in
+                                    Section {
+                                        HStack {
+                                            Text(key)
+                                            Text("\(viewStore.state.historicalSortingTimes.times.measurement[key]?.description ?? "")")
+                                        }
+                                    }
+                                }
+                            
                         }
-                        Spacer()
+                        
                     }
-                    .onAppear {
-                        viewStore.send(.internal(.onAppear))
-                    }
+                    Spacer()
+                }
+                .onAppear {
+                    viewStore.send(.internal(.onAppear))
                 }
             }
         }
     }
+}
 }
 public extension Sorting.View {
     struct Charts: SwiftUI.View {
@@ -100,14 +119,25 @@ public extension Sorting.View {
 }
 
 public extension Sorting.View {
-    func arraySizeSlider(arraySize: Binding<Double>, resetAction: @escaping () -> ()) -> some SwiftUI.View {
-        VStack {
-            Text("Array size: \(Int(arraySize.wrappedValue))")
-            HStack {
-                Slider(value: arraySize, in: 1...100, step: 1.0)
-                Button("Reset") {
-                    resetAction()
+    struct ArraySizeSlider: SwiftUI.View {
+        let arraySize: Binding<Double>
+        let resetAction: () -> ()
+        let frameWidth: CGFloat
+        let binding: Binding<Bool>
+        public var body: some View {
+            VStack {
+                Text("Array size: \(Int(arraySize.wrappedValue))")
+                HStack {
+                    Slider(value: arraySize, in: 1...100, step: 1.0)
+                    Button("Reset") {
+                        resetAction()
+                    }
                 }
+            }
+            .frame(width: frameWidth)
+            .popover(isPresented: binding
+            ) {
+                Text("The array is already sorted \n Please reset the array")
             }
         }
     }
