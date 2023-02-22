@@ -33,13 +33,6 @@ public extension Sorting {
                                     get: { $0.errorPopoverIsShowing},
                                     send:  .internal(.toggleErrorPopover))
                             )
-                            //                            .popover(isPresented:
-                            //                                        viewStore.binding(
-                            //                                            get: { $0.errorPopoverIsShowing},
-                            //                                            send:  .internal(.toggleErrorPopover))
-                            //                            ) {
-                            //                                Text("The array is already sorted \n Please reset the array")
-                            //                            }
                             
                             HStack {
                                 Button(action: {
@@ -95,7 +88,7 @@ public extension Sorting {
 }
 public extension Sorting.View {
     struct Charts: SwiftUI.View {
-        public let data: [ChartData.Elements]
+        public let data: [ChartData.Element]
         
         public var body: some SwiftUI.View {
             Chart {
@@ -105,7 +98,7 @@ public extension Sorting.View {
                         y: .value("", data.value),
                         stacking: .unstacked
                     )
-                    .foregroundStyle(by: .value("isElementCurrentlyBeingSorted", data.sortingStatus))
+//                    .foregroundStyle(by: .value("isElementCurrentlyBeingSorted", data.sortingStatus))
                 }
             }
             .chartForegroundStyleScale([

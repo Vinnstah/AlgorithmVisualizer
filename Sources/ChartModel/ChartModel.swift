@@ -1,43 +1,59 @@
 import Charts
 import Foundation
 import IdentifiedCollections
+import Algorithms
+
+public enum SortingOrder: Sendable, Hashable {
+    case increasing
+    case decreasing
+}
 
 public struct ChartData: Identifiable, Equatable, Sendable {
     public let id: UUID = UUID()
-    public var values: IdentifiedArrayOf<Elements>
-    public var sorted: Bool
+    public var values: IdentifiedArrayOf<Element>
     
-    public init(
-        values: IdentifiedArrayOf<Elements>,
-        sorted: Bool = false
-    ) {
-        self.values = values
-        self.sorted = sorted
+    public func isSorted(order: SortingOrder) -> Bool {
+        values.isSorted(order: order)
     }
     
-    public struct Elements: Identifiable, Equatable, Sendable, Comparable {
-        public static func < (lhs: ChartData.Elements, rhs: ChartData.Elements) -> Bool {
+    public init(
+        values: IdentifiedArrayOf<Element>
+    ) {
+        self.values = values
+    }
+    
+    public struct Element: Identifiable, Sendable, Comparable {
+        public static func < (lhs: Self, rhs: Self) -> Bool {
             return lhs.value < rhs.value
         }
         
         public var value: Int
         public let id: UUID
-        public var sortingStatus: SortingState
         
         public init(
             value: Int,
-            id: UUID,
-            sortingStatus: SortingState = .unsorted
+            id: UUID
         ) {
             self.value = value
             self.id = id
-            self.sortingStatus = sortingStatus
-        }
-        
-        public enum SortingState: String, Sendable, Plottable {
-            case unsorted = "Unsorted"
-            case sortingInProgress = "SortingInProgress"
-            case finishedSorting = "FinishedSorting"
         }
     }
 }
+
+public extension Collection where Element: Comparable {
+    func isSorted(order: SortingOrder) -> Bool {
+        let compare: (Element, Element) -> Bool = {
+            switch order {
+            case .decreasing: return { $0 > $1 }
+            case .increasing: return { $0 < $1 }
+            }
+        }()
+        return windows(ofCount: 2)
+            .map { Array($0) }
+            .map { ($0.first!, $0.last!) }
+            .map(compare)
+            .lazy
+            .reduce(true, { $0 && $1 })
+    }
+}
+

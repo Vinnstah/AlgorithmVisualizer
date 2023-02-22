@@ -8,7 +8,6 @@ public extension Sorting {
 
         case let .internal(.arraySizeStepperTapped(value)):
             state.array.values = IdentifiedArray(uniqueElements: self.elementGenerator.generateElements(Int(value)))
-            state.array.sorted = false
             return .none
             
         case let .internal(.sortingTimer(time, type)):
@@ -19,7 +18,7 @@ public extension Sorting {
             
         case .internal(.mergeSortTapped):
             
-            guard !state.array.sorted else {
+            guard !state.array.isSorted(order: .increasing) else {
                 return .run { send in
                     await send(.internal(.toggleErrorPopover))
                 }
@@ -30,7 +29,7 @@ public extension Sorting {
                 await send(.internal(.sortingTimer(
                     await self.clock.measure {
                         await send(.internal(.mergeSortResult(TaskResult {
-                            await self.sortingAlgorithms.mergeSort(array)
+                            await sortingAlgorithms.mergeSort(array)
                         }
                                                              )
                                             )
@@ -55,7 +54,7 @@ public extension Sorting {
             
         case .internal(.bubbleSortTapped):
             
-            guard !state.array.sorted else {
+            guard !state.array.isSorted(order: .increasing) else {
                 return .run { send in
                     await send(.internal(.toggleErrorPopover))
                 }
@@ -91,7 +90,6 @@ public extension Sorting {
             
         case .internal(.resetArrayTapped):
             state.array.values = IdentifiedArray(uniqueElements: self.elementGenerator.generateElements(20))
-            state.array.sorted = false
             state.errorPopoverIsShowing = false
             return .none
         }

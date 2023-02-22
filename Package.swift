@@ -4,6 +4,7 @@
 import PackageDescription
 
 let tca: Target.Dependency = .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+let algorithms: Target.Dependency = .product(name: "Algorithms", package: "swift-algorithms")
 
 let package = Package(
     
@@ -30,7 +31,8 @@ let package = Package(
             targets: ["SortingFeature"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", branch: "prerelease/1.0")
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", branch: "prerelease/1.0"),
+        .package(url: "https://github.com/apple/swift-algorithms.git", .upToNextMajor(from: "1.0.0")),
     ],
     targets: [
         
@@ -48,6 +50,7 @@ let package = Package(
             .target(
                 name: "ChartModel",
                 dependencies: [
+                    algorithms,
                     tca
                 ]),
         

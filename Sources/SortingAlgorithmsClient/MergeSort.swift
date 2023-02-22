@@ -12,12 +12,6 @@ public func merge(_ array: ChartData) async -> ChartData {
     var firstHalf = await merge(firstArray)
     var secondHalf = await merge(secondArray)
     
-    firstHalf.values.indices.forEach {
-        firstHalf.values[$0].sortingStatus = .sortingInProgress
-    }
-    secondHalf.values.indices.forEach {
-        secondHalf.values[$0].sortingStatus = .sortingInProgress
-    }
     
     return await mergeSort(&firstHalf, &secondHalf)
 }
@@ -31,25 +25,20 @@ public func mergeSort(
     while !firstHalf.values.isEmpty && !secondHalf.values.isEmpty {
         if firstHalf.values[0] > secondHalf.values[0] {
             sortedArray.values.append(secondHalf.values[0])
-            sortedArray.values[sortedArray.values.count-1].sortingStatus = .finishedSorting
             secondHalf.values.remove(at: 0)
             
         } else {
             sortedArray.values.append(firstHalf.values[0])
-            sortedArray.values[sortedArray.values.count-1].sortingStatus = .finishedSorting
             firstHalf.values.remove(at: 0)
         }
     }
     while firstHalf.values.count > 0 {
         sortedArray.values.append(firstHalf.values[0])
-        sortedArray.values[sortedArray.values.count-1].sortingStatus = .finishedSorting
         firstHalf.values.remove(at: 0)
     }
     while secondHalf.values.count > 0 {
         sortedArray.values.append(secondHalf.values[0])
-        sortedArray.values[sortedArray.values.count-1].sortingStatus = .finishedSorting
         secondHalf.values.remove(at: 0)
     }
-    sortedArray.sorted = true
     return sortedArray
 }

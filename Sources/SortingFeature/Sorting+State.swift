@@ -42,11 +42,16 @@ extension ContinuousClock: Equatable {
 
 extension TextState: @unchecked Sendable {}
 
-public struct SortingTimes: Equatable, Hashable {
+public struct SortingTimes: Equatable, Hashable, Sendable {
     
     public var times: SortingTimeContainer
     
-    public init(times: SortingTimeContainer = .init(measurement: [:])) { self.times = times}
+    public init(
+        times: SortingTimeContainer = .init(measurement: [:])
+    ) {
+        self.times = times
+        
+    }
     
     public mutating func addTime(time: ContinuousClock.Instant.Duration, type: SortingTypes) {
         switch type {
@@ -85,7 +90,7 @@ public struct SortingTimes: Equatable, Hashable {
         }
     }
     
-    public struct SortingTimeContainer: Equatable, Hashable, Identifiable {
+    public struct SortingTimeContainer: Equatable, Hashable, Identifiable, Sendable {
         public var measurement: [String : ContinuousClock.Instant.Duration]
         public var id: UUID
         

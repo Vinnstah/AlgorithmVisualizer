@@ -11,11 +11,11 @@ extension ElementGenerator: DependencyKey {
                 generateRandomElements(repeting: count)
             }
         )
-        @Sendable func generateRandomElements(repeting count: Int) -> [ChartData.Elements] {
-            var values: [ChartData.Elements] = []
+        @Sendable func generateRandomElements(repeting count: Int) -> [ChartData.Element] {
+            var values: [ChartData.Element] = []
             for _ in 1...count {
                 values.append(
-                    ChartData.Elements(
+                    ChartData.Element(
                         value: .random(in: 0...100),
                         id: uuid.callAsFunction()
                     )
@@ -36,11 +36,11 @@ extension ElementGenerator: DependencyKey {
 //                generateRandomElements(repeting: count, id: ids )
 //            }
 //        )
-//        @Sendable func generateRandomElements(repeting count: Int, id: UUID) -> [ChartData.Elements] {
-//            var values: [ChartData.Elements] = []
+//        @Sendable func generateRandomElements(repeting count: Int, id: UUID) -> [ChartData.Element] {
+//            var values: [ChartData.Element] = []
 //            for _ in 1...count {
 //                values.append(
-//                    ChartData.Elements(
+//                    ChartData.Element(
 //                        value: .random(in: 0...100),
 //                        id: uuid.callAsFunction()
 //                    )
@@ -51,11 +51,11 @@ extension ElementGenerator: DependencyKey {
 //    }
 //}
 
-//public func generateRandomElements(repeting count: Int, id: UUID) -> [ChartData.Elements] {
-//    var values: [ChartData.Elements] = []
+//public func generateRandomElements(repeting count: Int, id: UUID) -> [ChartData.Element] {
+//    var values: [ChartData.Element] = []
 //    for _ in 1...count {
 //        values.append(
-//            ChartData.Elements(
+//            ChartData.Element(
 //                value: .random(in: 0...100),
 //                id: <#UUID#>
 //            )
