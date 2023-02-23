@@ -1,5 +1,6 @@
 import Algorithms
 import Charts
+import Dependencies
 import Foundation
 import IdentifiedCollections
 
@@ -9,16 +10,25 @@ public enum SortingOrder: Sendable, Hashable {
 }
 
 public struct UnsortedElements: Identifiable, Equatable, Sendable {
-    public let id: UUID = .init()
+    public let id: UUID
     public var values: IdentifiedArrayOf<Element>
 
     public func isSorted(order: SortingOrder) -> Bool {
-        values.isSorted(order: order)
+        return values.isSorted(order: order)
     }
 
     public init(
         values: IdentifiedArrayOf<Element>
     ) {
+        @Dependency(\.uuid) var uuid
+        self.init(id: uuid(), values: values)
+    }
+
+    public init(
+        id: UUID,
+        values: IdentifiedArrayOf<Element>
+    ) {
+        self.id = id
         self.values = values
     }
 
@@ -44,8 +54,8 @@ public extension Collection where Element: Comparable {
     func isSorted(order: SortingOrder) -> Bool {
         let compare: (Element, Element) -> Bool = {
             switch order {
-            case .decreasing: return { $0 > $1 }
-            case .increasing: return { $0 < $1 }
+            case .decreasing: return { $0 >= $1 }
+            case .increasing: return { $0 <= $1 }
             }
         }()
         return windows(ofCount: 2)

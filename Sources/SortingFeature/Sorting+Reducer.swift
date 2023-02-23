@@ -17,6 +17,7 @@ public extension Sorting {
         case .internal(.mergeSortTapped):
 
             guard !state.array.isSorted(order: .increasing) else {
+                print("GUARD")
                 return .run { send in
                     await send(.internal(.toggleErrorPopover))
                 }
@@ -46,6 +47,7 @@ public extension Sorting {
 
         case .internal(.onAppear):
             return generate()
+
         case .internal(.bubbleSortTapped):
 
             guard !state.array.isSorted(order: .increasing) else {
