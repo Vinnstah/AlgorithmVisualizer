@@ -66,3 +66,28 @@ public extension Collection where Element: Comparable {
             .reduce(true) { $0 && $1 }
     }
 }
+
+
+
+    public struct Foo: Identifiable, Sendable, Comparable {
+        public static func < (lhs: Self, rhs: Self) -> Bool {
+            return lhs.value < rhs.value
+        }
+
+        public var value: Int
+        public let id: UUID
+        public let initialPostition: Int
+        public var currentPostition: Int
+
+        public init(
+            value: Int,
+            id: UUID,
+            initialPostition: Int,
+            currentPostition: Int
+        ) {
+            self.value = value
+            self.id = id
+            self.initialPostition = initialPostition
+            self.currentPostition = currentPostition
+        }
+    }

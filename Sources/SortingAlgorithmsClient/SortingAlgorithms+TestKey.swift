@@ -7,6 +7,7 @@ import Foundation
     public extension SortingAlgorithms {
         static let test = Self(
             mergeSort: XCTUnimplemented("\(Self.self).mergeSort"),
+            mergeSortOutput: XCTUnimplemented("\(Self.self).mergeSortOutput"),
             bubbleSort: XCTUnimplemented("\(Self.self).bubbleSort")
         )
     }

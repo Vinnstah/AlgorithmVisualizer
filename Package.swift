@@ -5,6 +5,7 @@ import PackageDescription
 
 let tca: Target.Dependency = .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
 let algorithms: Target.Dependency = .product(name: "Algorithms", package: "swift-algorithms")
+let asyncExtension: Target.Dependency =  .product(name: "AsyncExtensions", package: "AsyncExtensions")
 
 let package = Package(
     
@@ -33,7 +34,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", branch: "prerelease/1.0"),
         .package(url: "https://github.com/apple/swift-algorithms.git", .upToNextMajor(from: "1.0.0")),
-        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.50.9")
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.50.9"),
+        .package(url: "https://github.com/sideeffect-io/AsyncExtensions", from: "0.5.2")
     ],
     targets: [
         
@@ -75,6 +77,7 @@ let package = Package(
                 name: "SortingAlgorithmsClient",
                 dependencies: [
                     "UnsortedElements",
+                    asyncExtension,
                     tca
                 ]),
         

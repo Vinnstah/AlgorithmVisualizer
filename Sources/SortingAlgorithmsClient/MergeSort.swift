@@ -1,5 +1,6 @@
 import Foundation
 import UnsortedElements
+import IdentifiedCollections
 
 public func merge(_ array: UnsortedElements) async -> UnsortedElements {
     guard !array.values.isEmpty && array.values.count > 1 else {
@@ -40,3 +41,28 @@ public func mergeSort(
     }
     return sortedArray
 }
+
+//
+//public struct Queue<Foo> where Foo: Comparable {
+//    
+//    public var queue: [[Foo]]
+//    
+//    public mutating func removeElementsFromTheFrontOfTheQueue() -> [[Foo]] {
+//        queue.remove(at: 0)
+//        return queue
+//    }
+//    
+//    public mutating func addElementsToTheBackOfTheQueue(elements: [Foo]) -> [[Foo]] {
+//        queue.insert(elements, at: queue.values.count-1)
+//        return queue
+//    }
+//    
+//}
+//struct Test {
+//    var testQ: Queue<Foo>
+//    var testQ = testQ.addElementsToTheBackOfTheQueue(elements: [
+//        .init(value: 2, id: UUID(), initialPostition: 4, currentPostition: testQ.queue.firstIndex(where: { $0.id == id }) ?? -1) ,
+//        .init(value: 5, id: UUID(), initialPostition: 2, currentPostition: testQ.queue.index(where: { $0.id == id }))
+//    ])
+//    
+//}
