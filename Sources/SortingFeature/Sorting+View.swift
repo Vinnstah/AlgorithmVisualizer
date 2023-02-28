@@ -22,10 +22,10 @@ public extension Sorting {
                         VStack(alignment: .center) {
                             ArraySizeSlider(
                                 value: viewStore.binding(
-                                    get: { UInt($0.array.values.count) },
-                                    send: { .internal(.arraySizeStepperTapped($0)) }
+                                    get: { UInt($0.arrayToSort.values.count) },
+                                    send: { .view(.arraySizeStepperTapped($0)) }
                                 ),
-                                resetAction: { viewStore.send(.internal(.resetArrayTapped)) },
+                                resetAction: { viewStore.send(.view(.resetArrayTapped)) },
                                 frameWidth: geo.size.width / 4,
                                 binding: viewStore.binding(
                                     get: { $0.errorPopoverIsShowing },
@@ -33,7 +33,7 @@ public extension Sorting {
                                 ),
                                 animationDelayValue: viewStore.binding(
                                     get: { $0.sortingAnimationDelay },
-                                    send: { .internal(.animationDelayStepperTapped($0)) }
+                                    send: { .view(.animationDelayStepperTapped($0)) }
                                 )
                             )
 
@@ -57,7 +57,7 @@ public extension Sorting {
                                 Text("Quick Sort")
                             }
 
-                            Charts(data: viewStore.state.array.values.elements)
+                            Charts(data: viewStore.state.arrayToSort.values.elements)
                                 .frame(width: geo.size.width * 0.8, height: geo.size.height / 2)
 
                             VStack {
@@ -83,7 +83,7 @@ public extension Sorting {
                     }
                 }
                 .task {
-                    viewStore.send(.task)
+                    await viewStore.send(.task).finish()
                 }
             }
         }

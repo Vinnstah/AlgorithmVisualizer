@@ -35,9 +35,13 @@ extension SortingAlgorithms: DependencyKey {
             
             func algorithmAsyncSequenceBubble() -> AnyAsyncSequence<[Foo]?> {
                 algorithmChannelBubble
+                fatalError()
+                    .handleEvents(onCancel: { self.algorithmChannelBubble.finish() })
                     .multicast(replaySubjectBubble)
                     .autoconnect()
                     .eraseToAnyAsyncSequence()
+                    
+                    
             }
         }
         

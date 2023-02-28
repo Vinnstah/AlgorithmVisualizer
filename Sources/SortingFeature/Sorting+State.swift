@@ -15,26 +15,29 @@ public struct Sorting: Reducer {
 
 public extension Sorting {
     struct State: Equatable, Sendable {
-        public var array: UnsortedElements
+        public var arrayToSort: UnsortedElements
         public var timer: ContinuousClock.Instant.Duration
         public var errorPopoverIsShowing: Bool
         public var historicalSortingTimes: SortingTimes
         public var sortingAnimationDelay: Double
+        public var sortingInProgress: Bool
 
         public static let defaultElementCount: UInt = 20
 
         public init(
-            array: UnsortedElements = .init(values: []),
+            arrayToSort: UnsortedElements = .init(values: []),
             timer: ContinuousClock.Instant.Duration = .zero,
             errorPopoverIsShowing: Bool = false,
             historicalSortingTimes: SortingTimes = .init(),
-            sortingAnimationDelay: Double = 10.0
+            sortingAnimationDelay: Double = 10.0,
+            sortingInProgress: Bool = false
         ) {
-            self.array = array
+            self.arrayToSort = arrayToSort
             self.timer = timer
             self.errorPopoverIsShowing = errorPopoverIsShowing
             self.historicalSortingTimes = historicalSortingTimes
             self.sortingAnimationDelay = sortingAnimationDelay
+            self.sortingInProgress = sortingInProgress
         }
     }
 }
