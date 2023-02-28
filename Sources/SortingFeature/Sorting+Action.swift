@@ -19,6 +19,7 @@ public extension Sorting {
             case resetArrayTapped
             case generateElementsResult(TaskResult<UnsortedElements>)
             case bubbleSortValueResponse([Foo])
+            case animationDelayStepperTapped(Double)
         }
     }
 }

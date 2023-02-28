@@ -95,17 +95,20 @@ public extension Sorting {
             fatalError()
             
         case .task:
-            return .run { send in
+            return .run { [animationDelay = state.sortingAnimationDelay] send in
                 for try await value in await sortingAlgorithms.bubbleSortReceiver() {
                     guard let value else {
                         return
                     }
                     await send(.internal(.bubbleSortValueResponse(value)), animation: .default)
-                    try await Task.sleep(for: .milliseconds(100))
+                    try await Task.sleep(for: .milliseconds(animationDelay) )
                 }
             }
         case let .internal(.bubbleSortValueResponse(value)):
             state.array.values.swapAt(value[0].initialPostition, value[1].initialPostition)
+            return .none
+        case let .internal(.animationDelayStepperTapped(value)):
+            state.sortingAnimationDelay = value
             return .none
         }
     }

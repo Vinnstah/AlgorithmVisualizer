@@ -19,6 +19,7 @@ public extension Sorting {
         public var timer: ContinuousClock.Instant.Duration
         public var errorPopoverIsShowing: Bool
         public var historicalSortingTimes: SortingTimes
+        public var sortingAnimationDelay: Double
 
         public static let defaultElementCount: UInt = 20
 
@@ -26,12 +27,14 @@ public extension Sorting {
             array: UnsortedElements = .init(values: []),
             timer: ContinuousClock.Instant.Duration = .zero,
             errorPopoverIsShowing: Bool = false,
-            historicalSortingTimes: SortingTimes = .init()
+            historicalSortingTimes: SortingTimes = .init(),
+            sortingAnimationDelay: Double = 10.0
         ) {
             self.array = array
             self.timer = timer
             self.errorPopoverIsShowing = errorPopoverIsShowing
             self.historicalSortingTimes = historicalSortingTimes
+            self.sortingAnimationDelay = sortingAnimationDelay
         }
     }
 }

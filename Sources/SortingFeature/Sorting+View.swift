@@ -30,6 +30,10 @@ public extension Sorting {
                                 binding: viewStore.binding(
                                     get: { $0.errorPopoverIsShowing },
                                     send: .internal(.toggleErrorPopover)
+                                ),
+                                animationDelayValue: viewStore.binding(
+                                    get: { $0.sortingAnimationDelay },
+                                    send: { .internal(.animationDelayStepperTapped($0)) }
                                 )
                             )
 
@@ -117,21 +121,32 @@ public extension Sorting.View {
         let resetAction: () -> Void
         let frameWidth: CGFloat
         let binding: Binding<Bool>
+        let animationDelayValue: Binding<Double>
         public var body: some View {
-            VStack {
-                Text("Array size: \(Int(value.wrappedValue))")
-                HStack {
-                    Slider(value: .init(get: { Double(value.wrappedValue) }, set: { value.wrappedValue = UInt($0) }), in: 1 ... 100, step: 1.0)
-                    Button("Reset") {
-                        resetAction()
+            HStack {
+                VStack {
+                    Text("Animation delay ms: \(Int(animationDelayValue.wrappedValue))")
+                    HStack {
+                        Slider(value: .init(get: { animationDelayValue.wrappedValue }, set: { animationDelayValue.wrappedValue = $0 }), in: 1 ... 1000, step: 10.0)
+                        Spacer()
                     }
+                }
+                VStack {
+                    Text("Array size: \(Int(value.wrappedValue))")
+                    HStack {
+                        Slider(value: .init(get: { Double(value.wrappedValue) }, set: { value.wrappedValue = UInt($0) }), in: 1 ... 100, step: 1.0)
+                        Button("Reset") {
+                            resetAction()
+                        }
+                    }
+                }
+                
+                .popover(isPresented: binding
+                ) {
+                    Text("The array is already sorted \n Please reset the array")
                 }
             }
             .frame(width: frameWidth)
-            .popover(isPresented: binding
-            ) {
-                Text("The array is already sorted \n Please reset the array")
-            }
         }
     }
 }
