@@ -13,16 +13,29 @@ extension SortingAlgorithms: DependencyKey {
             private let algorithmChannel: AsyncThrowingBufferedChannel<[UnsortedElements.Element], Swift.Error> = .init()
             private let replaySubject: AsyncThrowingReplaySubject<[UnsortedElements.Element], Swift.Error> = .init(bufferSize: 1)
             
+            private let algorithmChannelBubble: AsyncThrowingBufferedChannel<[Foo]?, Swift.Error> = .init()
+            private let replaySubjectBubble: AsyncThrowingReplaySubject<[Foo]?, Swift.Error> = .init(bufferSize: 1)
+            
             init() {}
             
             func emit(_ elements: [UnsortedElements.Element]) {
                 algorithmChannel.send(elements)
             }
             
-            // uses `AnyAsyncSequence` from: https://github.com/sideeffect-io/AsyncExtensions
             func algorithmAsyncSequence() -> AnyAsyncSequence<[UnsortedElements.Element]> {
                 algorithmChannel
                     .multicast(replaySubject)
+                    .autoconnect()
+                    .eraseToAnyAsyncSequence()
+            }
+            
+            func emitBubbles(_ elements: [Foo]) {
+                algorithmChannelBubble.send(elements)
+            }
+            
+            func algorithmAsyncSequenceBubble() -> AnyAsyncSequence<[Foo]?> {
+                algorithmChannelBubble
+                    .multicast(replaySubjectBubble)
                     .autoconnect()
                     .eraseToAnyAsyncSequence()
             }
@@ -38,6 +51,17 @@ extension SortingAlgorithms: DependencyKey {
             },
             bubbleSort: { array in
                 await bubble(array: array)
+            },
+            bubbleSortOutput: { array  in
+                await bubbleStream(
+                    array: array,
+                    emitAction: { foo in
+                        await algorithmHolder.emitBubbles(foo())
+                    }
+                )
+            },
+            bubbleSortReceiver: {
+                await algorithmHolder.algorithmAsyncSequenceBubble()
             }
         )
     }

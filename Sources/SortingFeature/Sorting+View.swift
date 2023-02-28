@@ -78,6 +78,9 @@ public extension Sorting {
                         viewStore.send(.internal(.onAppear))
                     }
                 }
+                .task {
+                    viewStore.send(.task)
+                }
             }
         }
     }

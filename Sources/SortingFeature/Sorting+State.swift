@@ -68,7 +68,7 @@ public struct SortingTimes: Equatable, Hashable, Sendable {
         }
     }
 
-    public enum SortingTypes: String, Equatable, Hashable, RawRepresentable {
+    public enum SortingTypes: String, Equatable, Hashable, RawRepresentable, Sendable {
         case bubble
         case merge
         case insertion
