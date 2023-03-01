@@ -36,6 +36,10 @@ async -> UnsortedElements {
     for index in sortedArray.values.indices {
         if index == sortedArray.values.count - 1 {
             if numberOfChanges == 0 {
+                        await emitAction {
+                           return []
+                        }
+                print("DODODODO")
                 return sortedArray
             } else {
                 return await bubbleStream(array: sortedArray, emitAction: { test in await emitAction(test) })
@@ -43,6 +47,7 @@ async -> UnsortedElements {
         }
         if sortedArray.values[index + 1] < sortedArray.values[index] {
             sortedArray.values.swapAt(index, index + 1)
+            print("ITERATION \(index)")
             await emitAction {
                return [
                     .init(value: sortedArray.values[index + 1].value, id: sortedArray.values[index + 1].id, initialPostition: index + 1, currentPostition: index),
@@ -53,6 +58,8 @@ async -> UnsortedElements {
         }
     }
     guard numberOfChanges > 0 else {
+        print("DONENEE")
+
         return sortedArray
     }
     

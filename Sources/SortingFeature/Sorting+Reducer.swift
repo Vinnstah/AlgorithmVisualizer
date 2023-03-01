@@ -7,10 +7,8 @@ public extension Sorting {
         
         switch action {
         case let .view(.arraySizeStepperTapped(count)):
-            return .merge(
-//                .cancel(id: CancellableID.self),
-                generate(count: count)
-            )
+            return generate(count: count)
+            
             
         case let .internal(.sortingTimer(time, type)):
             state.timer = time
@@ -63,12 +61,10 @@ public extension Sorting {
             state.sortingInProgress = true
             state.timer = .zero
             return .run { [unsortedArray = state.arrayToSort] send in
-                await send(.task)
                 await send(.internal(.sortingTimer(
                     await self.clock.measure {
                         await send(.internal(.bubbleSortResult(TaskResult {
                             await self.sortingAlgorithms.bubbleSortOutput(unsortedArray)
-                            //                            await self.sortingAlgorithms.bubbleSort(array)
                         }
                                                               )))
                     },
@@ -79,7 +75,6 @@ public extension Sorting {
             
         case let .internal(.bubbleSortResult(.success(data))):
             //            state.array = data
-            state.sortingInProgress = false
             return .none
             
         case .internal(.bubbleSortResult(.failure(_))):
@@ -87,21 +82,19 @@ public extension Sorting {
             return .none
             
         case .internal(.toggleErrorPopover):
+            state.errorPopoverText = "The array is already sorted \n Please reset the array"
             state.errorPopoverIsShowing.toggle()
             return .none
             
         case .view(.resetArrayTapped):
-            
             state.errorPopoverIsShowing = false
             state.sortingInProgress = false
-            return .concatenate(
-                .cancel(id: CancellableID.self),
-                generate(count: UInt(state.arrayToSort.values.count))
-            )
+            return generate(count: UInt(state.arrayToSort.values.count))
             
         case let .internal(.generateElementsResult(.success(elementsToSort))):
             state.arrayToSort = elementsToSort
             return .none
+            
         case .internal(.generateElementsResult(.failure)):
             fatalError()
             
@@ -114,11 +107,14 @@ public extension Sorting {
                     await send(.internal(.bubbleSortValueResponse(value)), animation: .default)
                     try await Task.sleep(for: .milliseconds(animationDelay) )
                 }
-                    
             }
-            .cancellable(id: CancellableID.self, cancelInFlight: true)
+            
             
         case let .internal(.bubbleSortValueResponse(value)):
+            guard value != [] else {
+                state.sortingInProgress = false
+                return .none
+            }
             state.arrayToSort.values.swapAt(value[0].initialPostition, value[1].initialPostition)
             return .none
             
@@ -126,7 +122,9 @@ public extension Sorting {
             state.sortingAnimationDelay = value
             return .none
         }
+        
     }
+    
     
     private func generate(count: UInt) -> Effect<Action> {
         return .run { send in
@@ -144,3 +142,4 @@ public extension Sorting {
 }
 
 private enum CancellableID: Hashable {}
+private enum CancellableID2: Hashable {}

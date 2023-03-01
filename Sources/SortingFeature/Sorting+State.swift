@@ -21,6 +21,7 @@ public extension Sorting {
         public var historicalSortingTimes: SortingTimes
         public var sortingAnimationDelay: Double
         public var sortingInProgress: Bool
+        public var errorPopoverText: String
 
         public static let defaultElementCount: UInt = 20
 
@@ -30,7 +31,9 @@ public extension Sorting {
             errorPopoverIsShowing: Bool = false,
             historicalSortingTimes: SortingTimes = .init(),
             sortingAnimationDelay: Double = 10.0,
-            sortingInProgress: Bool = false
+            sortingInProgress: Bool = false,
+            errorPopoverText: String = ""
+            
         ) {
             self.arrayToSort = arrayToSort
             self.timer = timer
@@ -38,6 +41,7 @@ public extension Sorting {
             self.historicalSortingTimes = historicalSortingTimes
             self.sortingAnimationDelay = sortingAnimationDelay
             self.sortingInProgress = sortingInProgress
+            self.errorPopoverText = errorPopoverText
         }
     }
 }

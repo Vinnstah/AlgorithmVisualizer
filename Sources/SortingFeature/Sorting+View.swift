@@ -34,7 +34,9 @@ public extension Sorting {
                                 animationDelayValue: viewStore.binding(
                                     get: { $0.sortingAnimationDelay },
                                     send: { .view(.animationDelayStepperTapped($0)) }
-                                )
+                                ),
+                                errorPopoverText: viewStore.state.errorPopoverText,
+                                sortingInprogress: viewStore.state.sortingInProgress
                             )
 
                             HStack {
@@ -43,13 +45,15 @@ public extension Sorting {
                                 }, label: {
                                     Text("Merge Sort")
                                 })
-
+                                .disabled(viewStore.state.sortingInProgress)
+                                
                                 Button(action: {
                                     viewStore.send(.internal(.bubbleSortTapped), animation: .default)
 
                                 }, label: {
                                     Text("Bubble Sort")
                                 })
+                                .disabled(viewStore.state.sortingInProgress)
 
                                 Text("Insertion Sort")
                                 Text("Selection Sort")
@@ -122,12 +126,15 @@ public extension Sorting.View {
         let frameWidth: CGFloat
         let binding: Binding<Bool>
         let animationDelayValue: Binding<Double>
+        let errorPopoverText: String
+        let sortingInprogress: Bool
         public var body: some View {
             HStack {
                 VStack {
                     Text("Animation delay ms: \(Int(animationDelayValue.wrappedValue))")
                     HStack {
                         Slider(value: .init(get: { animationDelayValue.wrappedValue }, set: { animationDelayValue.wrappedValue = $0 }), in: 1 ... 1000, step: 10.0)
+                            .disabled(sortingInprogress)
                         Spacer()
                     }
                 }
@@ -135,15 +142,17 @@ public extension Sorting.View {
                     Text("Array size: \(Int(value.wrappedValue))")
                     HStack {
                         Slider(value: .init(get: { Double(value.wrappedValue) }, set: { value.wrappedValue = UInt($0) }), in: 1 ... 100, step: 1.0)
+                            .disabled(sortingInprogress)
                         Button("Reset") {
                             resetAction()
                         }
+                        .disabled(sortingInprogress)
                     }
                 }
                 
                 .popover(isPresented: binding
                 ) {
-                    Text("The array is already sorted \n Please reset the array")
+                    Text(errorPopoverText)
                 }
             }
             .frame(width: frameWidth)

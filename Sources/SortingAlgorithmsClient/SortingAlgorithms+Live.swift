@@ -13,6 +13,7 @@ extension SortingAlgorithms: DependencyKey {
             private let algorithmChannel: AsyncThrowingBufferedChannel<[UnsortedElements.Element], Swift.Error> = .init()
             private let replaySubject: AsyncThrowingReplaySubject<[UnsortedElements.Element], Swift.Error> = .init(bufferSize: 1)
             
+//            private let algorithmChannelBubble: AsyncThrowingPassthroughSubject<[Foo]?, Swift.Error> = .init()
             private let algorithmChannelBubble: AsyncThrowingBufferedChannel<[Foo]?, Swift.Error> = .init()
             private let replaySubjectBubble: AsyncThrowingReplaySubject<[Foo]?, Swift.Error> = .init(bufferSize: 1)
             
@@ -35,13 +36,13 @@ extension SortingAlgorithms: DependencyKey {
             
             func algorithmAsyncSequenceBubble() -> AnyAsyncSequence<[Foo]?> {
                 algorithmChannelBubble
-                fatalError()
-                    .handleEvents(onCancel: { self.algorithmChannelBubble.finish() })
+//                fatalError()
+//                    .share()
+//                    .autoconnect()
+                    .handleEvents(onCancel: { print("CANCELLATION")})
                     .multicast(replaySubjectBubble)
                     .autoconnect()
                     .eraseToAnyAsyncSequence()
-                    
-                    
             }
         }
         
