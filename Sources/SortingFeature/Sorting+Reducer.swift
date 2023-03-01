@@ -99,32 +99,37 @@ public extension Sorting {
             fatalError()
             
         case .task:
-            return .run { [animationDelay = state.sortingAnimationDelay] send in
-                for try await value in await sortingAlgorithms.bubbleSortReceiver() {
-                    guard let value else {
-                        return
-                    }
-                    await send(.internal(.bubbleSortValueResponse(value)), animation: .default)
-                    try await Task.sleep(for: .milliseconds(animationDelay) )
+            return .run { [sortingDelay = state.sortingAnimationDelay] send in
+                    for try await value in await sortingAlgorithms.bubbleSortReceiver() {
+                            guard let value else {
+                                return
+                            }
+                            await send(.internal(.bubbleSortValueResponse(value)), animation: .default)
+                        }
                 }
-            }
-            
             
         case let .internal(.bubbleSortValueResponse(value)):
             guard value != [] else {
                 state.sortingInProgress = false
                 return .none
             }
-            state.arrayToSort.values.swapAt(value[0].initialPostition, value[1].initialPostition)
-            return .none
+            state.arrayToSort.values.swapAt(value[0].previousIndex!, value[1].previousIndex!)
+            return .run { [sortingDelay = state.sortingAnimationDelay] _ in
+                try await Task.sleep(for: .milliseconds(sortingDelay))
+            }
             
         case let .view(.animationDelayStepperTapped(value)):
             state.sortingAnimationDelay = value
             return .none
         }
-        
     }
     
+        private func sleep(delay: Double) -> Effect<Action> {
+            return .run { _ in
+                try await Task.sleep(for: .milliseconds(delay))
+//                            try await clock.sleep(for: .milliseconds(delay))
+            }
+        }
     
     private func generate(count: UInt) -> Effect<Action> {
         return .run { send in
@@ -135,11 +140,6 @@ public extension Sorting {
             )))
         }
     }
-    
-    private func cancelTask() -> Effect<Action> {
-        return .cancel(id: CancellableID.self)
-    }
 }
 
-private enum CancellableID: Hashable {}
-private enum CancellableID2: Hashable {}
+public enum CancellationID: Hashable {}

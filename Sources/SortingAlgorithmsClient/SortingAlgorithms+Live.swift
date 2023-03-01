@@ -10,12 +10,9 @@ extension SortingAlgorithms: DependencyKey {
             // uses `AsyncBufferedChannel` from: https://github.com/sideeffect-io/AsyncExtensions
             // MUST have this if you PRODUCE values in one Task and CONSUME values in another,
             // which one very very often would like to do. AsyncStream DOES NOT support this.
-            private let algorithmChannel: AsyncThrowingBufferedChannel<[UnsortedElements.Element], Swift.Error> = .init()
-            private let replaySubject: AsyncThrowingReplaySubject<[UnsortedElements.Element], Swift.Error> = .init(bufferSize: 1)
             
-//            private let algorithmChannelBubble: AsyncThrowingPassthroughSubject<[Foo]?, Swift.Error> = .init()
-            private let algorithmChannelBubble: AsyncThrowingBufferedChannel<[Foo]?, Swift.Error> = .init()
-            private let replaySubjectBubble: AsyncThrowingReplaySubject<[Foo]?, Swift.Error> = .init(bufferSize: 1)
+            private let algorithmChannel: AsyncThrowingBufferedChannel<[UnsortedElements.Element]?, Swift.Error> = .init()
+            private let replaySubject: AsyncThrowingReplaySubject<[UnsortedElements.Element]?, Swift.Error> = .init(bufferSize: 1)
             
             init() {}
             
@@ -23,24 +20,9 @@ extension SortingAlgorithms: DependencyKey {
                 algorithmChannel.send(elements)
             }
             
-            func algorithmAsyncSequence() -> AnyAsyncSequence<[UnsortedElements.Element]> {
+            func algorithmAsyncSequence() -> AnyAsyncSequence<[UnsortedElements.Element]?> {
                 algorithmChannel
                     .multicast(replaySubject)
-                    .autoconnect()
-                    .eraseToAnyAsyncSequence()
-            }
-            
-            func emitBubbles(_ elements: [Foo]) {
-                algorithmChannelBubble.send(elements)
-            }
-            
-            func algorithmAsyncSequenceBubble() -> AnyAsyncSequence<[Foo]?> {
-                algorithmChannelBubble
-//                fatalError()
-//                    .share()
-//                    .autoconnect()
-                    .handleEvents(onCancel: { print("CANCELLATION")})
-                    .multicast(replaySubjectBubble)
                     .autoconnect()
                     .eraseToAnyAsyncSequence()
             }
@@ -52,21 +34,19 @@ extension SortingAlgorithms: DependencyKey {
             mergeSort: { array in
                 await merge(array)
             }, mergeSortOutput: {
-                await algorithmHolder.algorithmAsyncSequence()
-            },
-            bubbleSort: { array in
-                await bubble(array: array)
+                fatalError()
+//                await algorithmHolder.algorithmAsyncSequence()
             },
             bubbleSortOutput: { array  in
-                await bubbleStream(
+                await bubbleSortStream(
                     array: array,
-                    emitAction: { foo in
-                        await algorithmHolder.emitBubbles(foo())
+                    emitElements: { emit in
+                        await algorithmHolder.emit(emit())
                     }
                 )
             },
             bubbleSortReceiver: {
-                await algorithmHolder.algorithmAsyncSequenceBubble()
+                await algorithmHolder.algorithmAsyncSequence()
             }
         )
     }

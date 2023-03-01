@@ -89,6 +89,9 @@ public extension Sorting {
                 .task {
                     await viewStore.send(.task).finish()
                 }
+//                .onChange(of: viewStore.state.sortingAnimationDelay) { _ in
+//                    viewStore.send(.task)
+//                }
             }
         }
     }

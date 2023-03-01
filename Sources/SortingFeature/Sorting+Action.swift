@@ -23,7 +23,7 @@ public extension Sorting {
             case sortingTimer(ContinuousClock.Instant.Duration, SortingTimes.SortingTypes)
             case toggleErrorPopover
             case generateElementsResult(TaskResult<UnsortedElements>)
-            case bubbleSortValueResponse([Foo])
+            case bubbleSortValueResponse([UnsortedElements.Element])
         }
     }
 }

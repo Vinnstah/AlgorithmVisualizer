@@ -8,7 +8,6 @@ import Foundation
         static let test = Self(
             mergeSort: XCTUnimplemented("\(Self.self).mergeSort"),
             mergeSortOutput: XCTUnimplemented("\(Self.self).mergeSortOutput"),
-            bubbleSort: XCTUnimplemented("\(Self.self).bubbleSort"),
             bubbleSortOutput: XCTUnimplemented("\(Self.self).bubbleSortOutput"),
             bubbleSortReceiver: XCTUnimplemented("\(Self.self).bubbleSortReceiver")
         )

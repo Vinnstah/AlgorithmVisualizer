@@ -13,11 +13,12 @@ extension ElementGenerator: DependencyKey {
         )
         @Sendable func generateRandomElements(_ count: UInt) -> UnsortedElements {
             var values: [UnsortedElements.Element] = []
-            for _ in 1 ... count {
+            for index in 1 ... count {
                 values.append(
                     UnsortedElements.Element(
                         value: .random(in: 0 ... 100),
-                        id: uuid()
+                        id: uuid(),
+                        currentIndex: Int(index)
                     )
                 )
             }
