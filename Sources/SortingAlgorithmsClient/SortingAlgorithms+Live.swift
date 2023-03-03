@@ -16,7 +16,7 @@ extension SortingAlgorithms: DependencyKey {
             
             init() {}
             
-            func emit(_ elements: [UnsortedElements.Element]) {
+            func emit(_ elements: [UnsortedElements.Element])  {
                 algorithmChannel.send(elements)
             }
             
@@ -32,18 +32,16 @@ extension SortingAlgorithms: DependencyKey {
         
         return Self(
             mergeSort: { array in
-                await merge(array)
+                fatalError()
+//                await merge(array)
             }, mergeSortOutput: {
                 fatalError()
 //                await algorithmHolder.algorithmAsyncSequence()
             },
-            bubbleSortOutput: { array  in
-                await bubbleSortStream(
-                    array: array,
-                    emitElements: { emit in
-                        await algorithmHolder.emit(emit())
-                    }
-                )
+            bubbleSort: { arrayToSort in
+                await _bubbleSort(arrayToSort) { swappedPairs in
+                    await algorithmHolder.emit(swappedPairs)
+                }
             },
             bubbleSortReceiver: {
                 await algorithmHolder.algorithmAsyncSequence()

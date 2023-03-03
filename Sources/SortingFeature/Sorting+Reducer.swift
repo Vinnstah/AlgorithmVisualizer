@@ -57,29 +57,19 @@ public extension Sorting {
                     await send(.internal(.toggleErrorPopover))
                 }
             }
-            
             state.sortingInProgress = true
             state.timer = .zero
             return .run { [unsortedArray = state.arrayToSort] send in
                 await send(.internal(.sortingTimer(
                     await self.clock.measure {
-                        await send(.internal(.bubbleSortResult(TaskResult {
-                            await self.sortingAlgorithms.bubbleSortOutput(unsortedArray)
-                        }
-                                                              )))
+                        await self.sortingAlgorithms.bubbleSort(unsortedArray)
                     },
                     .bubble
-                )))
+                )
+                )
+                )
             }
             .animation()
-            
-        case let .internal(.bubbleSortResult(.success(data))):
-            //            state.array = data
-            return .none
-            
-        case .internal(.bubbleSortResult(.failure(_))):
-            print("BUBBLE FAIL")
-            return .none
             
         case .internal(.toggleErrorPopover):
             state.errorPopoverText = "The array is already sorted \n Please reset the array"
@@ -93,6 +83,7 @@ public extension Sorting {
             
         case let .internal(.generateElementsResult(.success(elementsToSort))):
             state.arrayToSort = elementsToSort
+            print(state.arrayToSort)
             return .none
             
         case .internal(.generateElementsResult(.failure)):
@@ -100,19 +91,20 @@ public extension Sorting {
             
         case .task:
             return .run { [sortingDelay = state.sortingAnimationDelay] send in
-                    for try await value in await sortingAlgorithms.bubbleSortReceiver() {
-                            guard let value else {
-                                return
-                            }
-                            await send(.internal(.bubbleSortValueResponse(value)), animation: .default)
-                        }
+                for try await value in await sortingAlgorithms.bubbleSortReceiver() {
+                    guard let value else {
+                        return
+                    }
+                    await send(.internal(.bubbleSortValueResponse(value)), animation: .easeInOut)
                 }
+            }
             
         case let .internal(.bubbleSortValueResponse(value)):
             guard value != [] else {
                 state.sortingInProgress = false
                 return .none
             }
+            
             state.arrayToSort.values.swapAt(value[0].previousIndex!, value[1].previousIndex!)
             return .run { [sortingDelay = state.sortingAnimationDelay] _ in
                 try await Task.sleep(for: .milliseconds(sortingDelay))
@@ -124,12 +116,12 @@ public extension Sorting {
         }
     }
     
-        private func sleep(delay: Double) -> Effect<Action> {
-            return .run { _ in
-                try await Task.sleep(for: .milliseconds(delay))
-//                            try await clock.sleep(for: .milliseconds(delay))
-            }
+    private func sleep(delay: Double) -> Effect<Action> {
+        return .run { _ in
+            try await Task.sleep(for: .milliseconds(delay))
+            //                            try await clock.sleep(for: .milliseconds(delay))
         }
+    }
     
     private func generate(count: UInt) -> Effect<Action> {
         return .run { send in

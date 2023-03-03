@@ -69,16 +69,16 @@ public extension Sorting {
                                 Text("\(viewStore.state.timer.description)")
                             }
 
-                            List {
-                                ForEach(viewStore.state.historicalSortingTimes.times.measurement.keys.sorted(), id: \.self) { key in
-                                    Section {
-                                        HStack {
-                                            Text(key)
-                                            Text("\(viewStore.state.historicalSortingTimes.times.measurement[key]?.description ?? "")")
-                                        }
-                                    }
-                                }
-                            }
+//                            List {
+//                                ForEach(viewStore.state.historicalSortingTimes.times.measurement.keys.sorted(), id: \.self) { key in
+//                                    Section {
+//                                        HStack {
+//                                            Text(key)
+//                                            Text("\(viewStore.state.historicalSortingTimes.times.measurement[key]?.description ?? "")")
+//                                        }
+//                                    }
+//                                }
+//                            }
                         }
                         Spacer()
                     }
