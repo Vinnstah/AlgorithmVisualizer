@@ -13,8 +13,8 @@ public func _bubbleSort(
     for index in arrayToSort.values.indices {
         if index == arrayToSort.values.count - 1 {
             if numberOfChanges == 0 {
-                await swappedPairs([])
-                return
+                return await swappedPairs([])
+                
             } else {
                 return await _bubbleSort(arrayToSort, swappedPairs)
             }
@@ -37,8 +37,8 @@ public func _bubbleSort(
         }
     }
     guard numberOfChanges > 0 else {
-        await swappedPairs([])
-        return
+        return await swappedPairs([])
+        
     }
     await _bubbleSort(arrayToSort, swappedPairs)
 }

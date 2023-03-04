@@ -16,13 +16,14 @@ public extension Sorting {
         
         public enum InternalAction: Equatable, Sendable {
             case mergeSortTapped
-            case mergeSortResult(TaskResult<UnsortedElements>)
+//            case mergeSortResult(TaskResult<UnsortedElements>)
             case bubbleSortTapped
             case onAppear
             case sortingTimer(ContinuousClock.Instant.Duration, SortingTimes.SortingTypes)
             case toggleErrorPopover
             case generateElementsResult(TaskResult<UnsortedElements>)
             case bubbleSortValueResponse([UnsortedElements.Element])
+            case mergeSortValueResponse([UnsortedElements.Element])
         }
     }
 }

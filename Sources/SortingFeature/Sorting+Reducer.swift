@@ -9,7 +9,6 @@ public extension Sorting {
         case let .view(.arraySizeStepperTapped(count)):
             return generate(count: count)
             
-            
         case let .internal(.sortingTimer(time, type)):
             state.timer = time
             state.historicalSortingTimes.addTime(time: state.timer, type: type)
@@ -28,24 +27,21 @@ public extension Sorting {
             return .run { [unsortedArray = state.arrayToSort] send in
                 await send(.internal(.sortingTimer(
                     await self.clock.measure {
-                        await send(.internal(.mergeSortResult(TaskResult {
-                            await sortingAlgorithms.mergeSort(unsortedArray)
-                        }
-                                                             )))
+                        //                        await send(.internal(.mergeSortResult(TaskResult {
+                        //                            await sortingAlgorithms.mergeSort(unsortedArray)
+                        await sortingAlgorithms.mergeSort(unsortedArray)
                     },
                     .merge
                 )))
             }
             .animation()
             
-        case let .internal(.mergeSortResult(.success(result))):
-            state.arrayToSort = result
+        case let .internal(.mergeSortValueResponse(value)):
+            print("VALUES \(value)")
+            //            state.arrayToSort.values.
             state.sortingInProgress = false
             return .none
             
-        case .internal(.mergeSortResult(.failure)):
-            print("fail")
-            return .none
             
         case .internal(.onAppear):
             return generate(count: State.defaultElementCount)
@@ -83,19 +79,30 @@ public extension Sorting {
             
         case let .internal(.generateElementsResult(.success(elementsToSort))):
             state.arrayToSort = elementsToSort
-            print(state.arrayToSort)
             return .none
             
         case .internal(.generateElementsResult(.failure)):
             fatalError()
             
         case .task:
-            return .run { [sortingDelay = state.sortingAnimationDelay] send in
-                for try await value in await sortingAlgorithms.bubbleSortReceiver() {
-                    guard let value else {
-                        return
+            return .run { send in
+                await  withThrowingTaskGroup(of: Void.self) { group in
+                    group.addTask {
+                        for try await value in await sortingAlgorithms.bubbleSortReceiver() {
+                            guard let value else {
+                                return
+                            }
+                            await send(.internal(.bubbleSortValueResponse(value)), animation: .easeInOut)
+                        }
                     }
-                    await send(.internal(.bubbleSortValueResponse(value)), animation: .easeInOut)
+                    group.addTask {
+                        for try await value in await sortingAlgorithms.mergeSortReceiver() {
+                            guard let value else {
+                                return
+                            }
+                            await send(.internal(.mergeSortValueResponse(value)), animation: .easeInOut)
+                        }
+                    }
                 }
             }
             

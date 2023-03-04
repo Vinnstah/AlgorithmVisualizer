@@ -4,44 +4,36 @@ import IdentifiedCollections
 
 public func merge(
     _ array: UnsortedElements,
-    emitElements: @escaping (_ elements: @escaping ((()) async -> [UnsortedElements.Element])) async -> Void)
-async -> UnsortedElements {
+    _ elementsToSort: ([UnsortedElements.Element]) async -> Void
+) async -> UnsortedElements {
     guard !array.values.isEmpty && array.values.count > 1 else {
-        await emitElements {
-            array.values.elements
-        }
+//        await elementsToSort([])
         return array
     }
     let middleIndex = array.values.count / 2
     let firstArray = UnsortedElements(values: .init(uniqueElements: array.values[0 ..< middleIndex]))
     let secondArray = UnsortedElements(values: .init(uniqueElements: array.values[middleIndex ..< array.values.count]))
 
-    var firstHalf = await merge(firstArray, emitElements: { elements in await emitElements(elements) })
-    var secondHalf = await merge(secondArray, emitElements: { elements in await emitElements(elements) })
+    var firstHalf = await merge(firstArray, elementsToSort)
+    var secondHalf = await merge(secondArray, elementsToSort)
 
-    return await mergeSort(&firstHalf, &secondHalf, emitElements: emitElements)
+     await mergeSort(&firstHalf, &secondHalf, elementsToSort)
+    return array
 }
 
 public func mergeSort(
     _ firstHalf: inout UnsortedElements,
     _ secondHalf: inout UnsortedElements,
-    emitElements: (@escaping ((()) async ->  [UnsortedElements.Element])) async -> Void
-) async -> UnsortedElements {
+    _ elementsToSort: ([UnsortedElements.Element]) async -> Void
+) async -> Void {
     var sortedArray: UnsortedElements = .init(values: [])
     while !firstHalf.values.isEmpty && !secondHalf.values.isEmpty {
         if firstHalf.values[0] > secondHalf.values[0] {
-            await emitElements {
-                fatalError()
-                [
-//                    .init(
-//                        value: firstHalf.values[0].value,
-//                        id: firstHalf.values[0].id,
-//                        previousIndex: firstHalf.getPreviousIndex(id: firstHalf.values[0].id),
-//                        currentIndex: firstHalf.values[0].currentIndex
-//                    )
-                ]
-            }
             sortedArray.values.append(secondHalf.values[0])
+            await elementsToSort(
+                sortedArray.values.elements
+//                UnsortedElements.Element(value: secondHalf.values[0].value, id: secondHalf.values[0].id, previousIndex: secondHalf.values[0].currentIndex, currentIndex: secondHalf.values[0].currentIndex)
+            )
             secondHalf.values.remove(at: 0)
 
         } else {
@@ -57,7 +49,7 @@ public func mergeSort(
         sortedArray.values.append(secondHalf.values[0])
         secondHalf.values.remove(at: 0)
     }
-    return sortedArray
+    return
 }
 
 extension UnsortedElements {
