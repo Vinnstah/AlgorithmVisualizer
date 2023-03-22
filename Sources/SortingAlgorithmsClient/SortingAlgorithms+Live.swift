@@ -12,13 +12,23 @@ extension SortingAlgorithms: DependencyKey {
             // which one very very often would like to do. AsyncStream DOES NOT support this.
             
             private let algorithmChannel: AsyncThrowingBufferedChannel<[UnsortedElements.Element]?, Swift.Error> = .init()
+            private let algorithmChannelQueue: AsyncThrowingBufferedChannel<Queue<UnsortedElements.Element>?, Swift.Error> = .init()
+            private let algorithmChannelGeneric: AsyncThrowingBufferedChannel<[UnsortedElements.Element]?, Swift.Error> = .init()
             private let replaySubject: AsyncThrowingReplaySubject<[UnsortedElements.Element]?, Swift.Error> = .init(bufferSize: 1)
+            private let replaySubjectQueue: AsyncThrowingReplaySubject<Queue<UnsortedElements.Element>?, Swift.Error> = .init(bufferSize: 1)
             
             init() {}
             
-            func emit(_ elements: [UnsortedElements.Element])  {
-                algorithmChannel.send(elements)
-                print("EMIT \(elements)")
+            func emit(_ elements: UnsortedElements)  {
+                algorithmChannel.send(elements.values.elements)
+            }
+
+            
+            func algorithmAsyncSequenceQueue() -> AnyAsyncSequence<Queue<UnsortedElements.Element>?> {
+                algorithmChannelQueue
+                    .multicast(replaySubjectQueue)
+                    .autoconnect()
+                    .eraseToAnyAsyncSequence()
             }
             
             func algorithmAsyncSequence() -> AnyAsyncSequence<[UnsortedElements.Element]?> {
@@ -33,11 +43,11 @@ extension SortingAlgorithms: DependencyKey {
         
         return Self(
             mergeSort: { arrayToSort in
-                await merge(arrayToSort) { elementsToSort in
-                    await algorithmHolder.emit(elementsToSort)
+                await algorithmHolder.emit(await _merge(array: arrayToSort) { elementsToSort in
+//                    await algorithmHolder.emit(elementsToSort)
                 }
+                )
                 return
-//                await merge(array)
             }, mergeSortReceiver: {
                 await algorithmHolder.algorithmAsyncSequence()
             },
@@ -48,6 +58,12 @@ extension SortingAlgorithms: DependencyKey {
             },
             bubbleSortReceiver: {
                 await algorithmHolder.algorithmAsyncSequence()
+            },
+            selectionSort: { array in
+                var arrayToSort = array
+                await _selectionSort(&arrayToSort, 0) { elementsToSort in
+                    await algorithmHolder.emit(elementsToSort)
+                }
             }
         )
     }

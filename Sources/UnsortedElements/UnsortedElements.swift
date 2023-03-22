@@ -39,7 +39,7 @@ public struct UnsortedElements: Identifiable, Equatable, Sendable {
 
         public var value: Int
         public let id: UUID
-        public let previousIndex: Int?
+        public var previousIndex: Int?
         public var currentIndex: Int
 
         public init(
@@ -72,3 +72,4 @@ public extension Collection where Element: Comparable {
             .reduce(true) { $0 && $1 }
     }
 }
+

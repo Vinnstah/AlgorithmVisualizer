@@ -9,7 +9,8 @@ import Foundation
             mergeSort: XCTUnimplemented("\(Self.self).mergeSort"),
             mergeSortReceiver: XCTUnimplemented("\(Self.self).mergeSortReceiver"),
             bubbleSort: XCTUnimplemented("\(Self.self).bubbleSort"),
-            bubbleSortReceiver: XCTUnimplemented("\(Self.self).bubbleSortReceiver")
+            bubbleSortReceiver: XCTUnimplemented("\(Self.self).bubbleSortReceiver"),
+            selectionSort: unimplemented() 
         )
     }
 
