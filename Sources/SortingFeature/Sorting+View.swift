@@ -92,12 +92,6 @@ public extension Sorting {
                         viewStore.send(.internal(.onAppear))
                     }
                 }
-                .task {
-                    await viewStore.send(.task).finish()
-                }
-//                .onChange(of: viewStore.state.sortingAnimationDelay) { _ in
-//                    viewStore.send(.task)
-//                }
             }
         }
     }
@@ -155,7 +149,6 @@ public extension Sorting.View {
                         Button("Reset") {
                             resetAction()
                         }
-                        .disabled(sortingInprogress)
                     }
                 }
                 
@@ -168,19 +161,3 @@ public extension Sorting.View {
         }
     }
 }
-
-// public let testArray: UnsortedElements = .init(values: [
-//    .init(value: 1, sortingStatus: .unsorted),
-//    .init(value: 22, sortingStatus: .sortingInProgress),
-//    .init(value: 41, sortingStatus: .sortingInProgress),
-//    .init(value: 21, sortingStatus: .finishedSorting),
-//    .init(value: 14, sortingStatus: .unsorted),
-//    .init(value: 82, sortingStatus: .sortingInProgress),
-//    .init(value: 42, sortingStatus: .sortingInProgress),
-//    .init(value: 21, sortingStatus: .finishedSorting),
-//    .init(value: 16, sortingStatus: .unsorted),
-//    .init(value: 42, sortingStatus: .sortingInProgress),
-//    .init(value: 76, sortingStatus: .unsorted),
-//    .init(value: 6, sortingStatus: .finishedSorting),
-//
-// ])

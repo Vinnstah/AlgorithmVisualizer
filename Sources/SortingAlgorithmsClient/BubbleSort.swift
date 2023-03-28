@@ -2,11 +2,14 @@ import Foundation
 import UnsortedElements
 import AsyncExtensions
 
+//public func _bubbleSort(
+//    _ array: UnsortedElements,
+//    _ swappedPairs: (UnsortedElements) async -> Void
+//) async {
 public func _bubbleSort(
     _ array: UnsortedElements,
-//    _ swappedPairs: ([UnsortedElements.Element]) async -> Void
-    _ swappedPairs: (UnsortedElements) async -> Void
-) async {
+    _ swappedPairs: (UnsortedElements) -> Void
+) {
     
     var arrayToSort: UnsortedElements = array
     var numberOfChanges = 0
@@ -14,10 +17,10 @@ public func _bubbleSort(
     for index in arrayToSort.values.indices {
         if index == arrayToSort.values.count - 1 {
             if numberOfChanges == 0 {
-                return await swappedPairs(arrayToSort)
+                return swappedPairs(arrayToSort)
                 
             } else {
-                return await _bubbleSort(arrayToSort, swappedPairs)
+                return _bubbleSort(arrayToSort, swappedPairs)
             }
         }
         if arrayToSort.values[index + 1] < arrayToSort.values[index] {
@@ -34,13 +37,13 @@ public func _bubbleSort(
 //                    previousIndex: index + 1,
 //                    currentIndex: index)
 //            ])
-            await swappedPairs(arrayToSort)
+            swappedPairs(arrayToSort)
             numberOfChanges += 1
         }
     }
     guard numberOfChanges > 0 else {
-        return await swappedPairs(arrayToSort)
+        return swappedPairs(arrayToSort)
         
     }
-    await _bubbleSort(arrayToSort, swappedPairs)
+    _bubbleSort(arrayToSort, swappedPairs)
 }

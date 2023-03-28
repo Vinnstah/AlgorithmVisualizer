@@ -7,8 +7,7 @@ public extension Sorting {
     enum Action: Equatable, Sendable {
         case `internal`(InternalAction)
         case view(ViewAction)
-        case task
-
+        
         public enum ViewAction: Equatable, Sendable {
             case arraySizeStepperTapped(UInt)
             case animationDelayStepperTapped(Double)

@@ -24,41 +24,29 @@ public extension Sorting {
             
             state.timer = .zero
             state.sortingInProgress = true
-            return .run { [unsortedArray = state.arrayToSort] send in
-                await send(.internal(.sortingTimer(
-                    await self.clock.measure {
-                        //                        await send(.internal(.mergeSortResult(TaskResult {
-                        //                            await sortingAlgorithms.mergeSort(unsortedArray)
-                        await sortingAlgorithms.mergeSort(unsortedArray)
-                    },
-                    .merge
-                )))
+            
+            var listOfAllElementSwaps: [UnsortedElements] = []
+            
+            state.timer = clock.measure {
+                sortingAlgorithms.mergeSort(state.arrayToSort) { swappedElementsList in
+                    listOfAllElementSwaps = swappedElementsList
+                }
+            }
+            return .run { [swappedElementsList = listOfAllElementSwaps, animationDelay = state.sortingAnimationDelay] send in
+                for swappedValues in swappedElementsList {
+                    await send(.internal(.mergeSortValueResponse(swappedValues.values.elements)))
+                    try await Task.sleep(for: .milliseconds(animationDelay))
+                }
             }
             .animation()
+            .cancellable(id: CancelID.sortingAlgorithm)
             
         case let .internal(.mergeSortValueResponse(values)):
-            state.arrayToSort.values = IdentifiedArrayOf(values) 
-            print(values)
-//            var queue = values
-//            for value in queue.queue {
-//                if queue.queue.count < 2 {
-//                    print("REMOVE")
-//                    queue.removeElementsFromTheFrontOfTheQueue()
-//                    state.sortingInProgress = false
-//                    return .none
-//                }
-//                print(value)
-//
-////                state.arrayToSort.valuesr
-//                state.arrayToSort.values.swapAt(values.queue.firstIndex(of: value)!, values.queue.firstIndex(of: value)!+1)
-//                queue.removeElementsFromTheFrontOfTheQueue()
-//            }
-//            for index in values.indices {
-//                state.arrayToSort.values.swapAt(state.arrayToSort.values.elements[index].currentIndex, values[index].currentIndex)
-//            }
-//            state.arrayToSort.values.elements
-            //            state.arrayToSort.values.
-            state.sortingInProgress = false
+            guard values.count != 0 else {
+                state.sortingInProgress = false
+                return .none
+            }
+            state.arrayToSort.values = IdentifiedArrayOf(uniqueElements: values)
             return .none
             
             
@@ -74,18 +62,23 @@ public extension Sorting {
             }
             state.sortingInProgress = true
             state.timer = .zero
-            return .run { [unsortedArray = state.arrayToSort] send in
-                await send(.internal(.sortingTimer(
-                    await self.clock.measure {
-                        await self.sortingAlgorithms.bubbleSort(unsortedArray)
-                    },
-                    .bubble
-                )
-                )
-                )
+            
+            var listOfAllElementSwaps: [UnsortedElements] = []
+            
+            state.timer = clock.measure {
+                sortingAlgorithms.bubbleSort(state.arrayToSort) { swappedElementsList in
+                    listOfAllElementSwaps = swappedElementsList
+                }
+            }
+            return .run { [swappedElementsList = listOfAllElementSwaps, animationDelay = state.sortingAnimationDelay] send in
+                for swappedValues in swappedElementsList {
+                    await send(.internal(.bubbleSortValueResponse(swappedValues.values.elements)))
+                    try await Task.sleep(for: .milliseconds(animationDelay))
+                }
             }
             .animation()
-        
+            .cancellable(id: CancelID.sortingAlgorithm)
+            
         case .internal(.selectionSortTapped):
             
             guard !state.arrayToSort.isSorted(order: .increasing) else {
@@ -95,18 +88,23 @@ public extension Sorting {
             }
             state.sortingInProgress = true
             state.timer = .zero
-            return .run { [unsortedArray = state.arrayToSort] send in
-                var arrayToSort = unsortedArray
-                await send(.internal(.sortingTimer(
-                    await self.clock.measure {
-                        await self.sortingAlgorithms.selectionSort(&arrayToSort)
-                    },
-                    .selection
-                )
-                )
-                )
+            
+            var listOfAllElementSwaps: [UnsortedElements] = []
+            
+            state.timer = clock.measure {
+                sortingAlgorithms.selectionSort(&state.arrayToSort) { swappedElementsList in
+                    listOfAllElementSwaps = swappedElementsList
+                }
+            }
+            
+            return .run { [swappedElementsList = listOfAllElementSwaps, animationDelay = state.sortingAnimationDelay] send in
+                for swappedValues in swappedElementsList {
+                    await send(.internal(.selectionSortValueResponse(swappedValues.values.elements)))
+                    try await Task.sleep(for: .milliseconds(animationDelay))
+                }
             }
             .animation()
+            .cancellable(id: CancelID.sortingAlgorithm)
             
         case .internal(.toggleErrorPopover):
             state.errorPopoverText = "The array is already sorted \n Please reset the array"
@@ -116,7 +114,11 @@ public extension Sorting {
         case .view(.resetArrayTapped):
             state.errorPopoverIsShowing = false
             state.sortingInProgress = false
-            return generate(count: UInt(state.arrayToSort.values.count))
+            
+            return .merge(
+                .cancel(id: CancelID.sortingAlgorithm),
+                generate(count: UInt(state.arrayToSort.values.count))
+            )
             
         case let .internal(.generateElementsResult(.success(elementsToSort))):
             state.arrayToSort = elementsToSort
@@ -125,49 +127,22 @@ public extension Sorting {
         case .internal(.generateElementsResult(.failure)):
             fatalError()
             
-        case .task:
-            return .run { send in
-//                await withThrowingTaskGroup(of: Void.self) { group in
-//                    group.addTask {
-//                        for try await value in await sortingAlgorithms.bubbleSortReceiver() {
-//                            guard let value else {
-//                                return
-//                            }
-//                            await send(.internal(.bubbleSortValueResponse(value)), animation: .easeInOut)
-//                        }
-//                    }
-//                    group.addTask {
-                        for try await value in await sortingAlgorithms.mergeSortReceiver() {
-//                            print("MSORT \(value)")
-                            guard let value else {
-                                return
-                            }
-                            await send(.internal(.mergeSortValueResponse(value)), animation: .easeInOut)
-//                        }
-//                    }
-                }
+        case let .internal(.bubbleSortValueResponse(values)):
+            guard values.count != 0 else {
+                state.sortingInProgress = false
+                return .none
             }
+            state.arrayToSort.values = IdentifiedArrayOf(uniqueElements: values)
+            return .none
             
-        case let .internal(.bubbleSortValueResponse(value)):
-            guard value != [] else {
+        case let .internal(.selectionSortValueResponse(values)):
+            guard values.count != 0 else {
                 state.sortingInProgress = false
                 return .none
             }
             
-            state.arrayToSort.values.swapAt(value[0].previousIndex!, value[1].previousIndex!)
-            return .run { [sortingDelay = state.sortingAnimationDelay] _ in
-                try await Task.sleep(for: .milliseconds(sortingDelay))
-            }
-        case let .internal(.selectionSortValueResponse(value)):
-            guard value != [] else {
-                state.sortingInProgress = false
-                return .none
-            }
-            
-            state.arrayToSort.values = IdentifiedArrayOf(uniqueElements: value)
-            return .run { [sortingDelay = state.sortingAnimationDelay] _ in
-                try await Task.sleep(for: .milliseconds(sortingDelay))
-            }
+            state.arrayToSort.values = IdentifiedArrayOf(uniqueElements: values)
+            return .none
             
         case let .view(.animationDelayStepperTapped(value)):
             state.sortingAnimationDelay = value
@@ -178,7 +153,6 @@ public extension Sorting {
     private func sleep(delay: Double) -> Effect<Action> {
         return .run { _ in
             try await Task.sleep(for: .milliseconds(delay))
-            //                            try await clock.sleep(for: .milliseconds(delay))
         }
     }
     
@@ -193,4 +167,6 @@ public extension Sorting {
     }
 }
 
-public enum CancellationID: Hashable {}
+private enum CancelID: Hashable {
+    case sortingAlgorithm
+}
