@@ -8,7 +8,8 @@ import Foundation
         static let test = Self(
             mergeSort: unimplemented() ,
             bubbleSort: unimplemented(),
-            selectionSort: unimplemented() 
+            selectionSort: unimplemented(),
+            insertionSort: unimplemented()
         )
     }
 

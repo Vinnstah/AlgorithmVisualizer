@@ -55,7 +55,16 @@ public extension Sorting {
                                 })
                                 .disabled(viewStore.state.sortingInProgress)
 
-                                Text("Insertion Sort")
+                                
+                                Button(action: {
+                                    viewStore.send(.internal(.insertionSortTapped), animation: .default)
+
+                                }, label: {
+                                    Text("Insertion Sort")
+                                })
+                                .disabled(viewStore.state.sortingInProgress)
+
+                                
                                 
                                 Button(action: {
                                     viewStore.send(.internal(.selectionSortTapped), animation: .default)

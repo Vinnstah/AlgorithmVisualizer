@@ -39,19 +39,13 @@ public struct UnsortedElements: Identifiable, Equatable, Sendable {
 
         public var value: Int
         public let id: UUID
-        public var previousIndex: Int?
-        public var currentIndex: Int
 
         public init(
             value: Int,
-            id: UUID,
-            previousIndex: Int? = nil,
-            currentIndex: Int
+            id: UUID
         ) {
             self.value = value
             self.id = id
-            self.previousIndex = previousIndex
-            self.currentIndex = currentIndex
         }
     }
 }

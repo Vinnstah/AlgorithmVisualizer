@@ -8,9 +8,8 @@ extension SortingAlgorithms: DependencyKey {
         return Self(
             mergeSort: { arrayToSort, callback in
                 var sortingList: [UnsortedElements] = []
-                _merge(array: arrayToSort) { elementsToSort in
+                _ = _merge(array: arrayToSort) { elementsToSort in
                     sortingList.append(elementsToSort)
-//                    await algorithmHolder.emit(elementsToSort)
                 }
                 sortingList.append(.init(values: .init()))
                 callback(sortingList)
@@ -27,6 +26,16 @@ extension SortingAlgorithms: DependencyKey {
                 var arrayToSort = array
                 var sortingList: [UnsortedElements] = []
                  _selectionSort(&arrayToSort, 0) { elementsToSort in
+                     sortingList.append(elementsToSort)
+                }
+                sortingList.append(.init(values: .init()))
+                callback(sortingList)
+            },
+            insertionSort: { array, callback in
+                print("@!@")
+                var arrayToSort = array
+                var sortingList: [UnsortedElements] = []
+                 _insertionSort(&arrayToSort) { elementsToSort in
                      sortingList.append(elementsToSort)
                 }
                 sortingList.append(.init(values: .init()))

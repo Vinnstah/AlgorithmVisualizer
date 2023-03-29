@@ -147,6 +147,40 @@ public extension Sorting {
         case let .view(.animationDelayStepperTapped(value)):
             state.sortingAnimationDelay = value
             return .none
+        case .internal(.insertionSortTapped):
+            
+            guard !state.arrayToSort.isSorted(order: .increasing) else {
+                return .run { send in
+                    await send(.internal(.toggleErrorPopover))
+                }
+            }
+            
+            state.timer = .zero
+            state.sortingInProgress = true
+            
+            var listOfAllElementSwaps: [UnsortedElements] = []
+            
+            state.timer = clock.measure {
+                sortingAlgorithms.insertionSort(&state.arrayToSort) { swappedElementsList in
+                    listOfAllElementSwaps = swappedElementsList
+                }
+            }
+            return .run { [swappedElementsList = listOfAllElementSwaps, animationDelay = state.sortingAnimationDelay] send in
+                for swappedValues in swappedElementsList {
+                    await send(.internal(.insertionSortValueResponse(swappedValues.values.elements)))
+                    try await Task.sleep(for: .milliseconds(animationDelay))
+                }
+            }
+            .animation()
+            .cancellable(id: CancelID.sortingAlgorithm)
+        case let .internal(.insertionSortValueResponse(values)):
+            guard values.count != 0 else {
+                state.sortingInProgress = false
+                return .none
+            }
+            
+            state.arrayToSort.values = IdentifiedArrayOf(uniqueElements: values)
+            return .none
         }
     }
     
