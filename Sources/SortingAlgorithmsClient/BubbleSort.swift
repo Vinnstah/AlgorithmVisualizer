@@ -14,7 +14,6 @@ public func _bubbleSort(
         if index == arrayToSort.values.count - 1 {
             if numberOfChanges == 0 {
                 return callbackWithSortingProgress(arrayToSort)
-                
             } else {
                 return _bubbleSort(arrayToSort, callbackWithSortingProgress)
             }

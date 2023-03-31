@@ -22,7 +22,7 @@ final class SortingFeatureTests: XCTestCase {
         await store.send(.internal(.onAppear))
         
         await store.receive(.internal(.generateElementsResult(.success(dummy)))) {
-            $0.array = dummy
+            $0.arrayToSort = dummy
         }
         
         await numberOfElementsToGenerate.withValue {
@@ -32,26 +32,27 @@ final class SortingFeatureTests: XCTestCase {
     
     func test__GIVEN__unsorted_array__WHEN__mergeSort_is_tapped__THEN__mergeSort_result_is_received() async {
         let uuid = UUID()
-        let dummySorted = UnsortedElements.dummySorted(id: uuid)
+        let dummySorted = UnsortedElements.dummySorted(id: uuid).values
         
         let store = TestStore(
-            initialState: Sorting.State(array: UnsortedElements.dummyUnsorted(id: uuid)),
+            initialState: Sorting.State(arrayToSort: UnsortedElements.dummyUnsorted(id: uuid)),
             reducer: Sorting()
         ) {
             $0.uuid = .incrementing
-            $0.sortingAlgorithms.mergeSort = {
-                $0
-                return dummySorted
-            }
+            //            $0.sortingAlgorithms.mergeSort = {
+            ////                $0
+            //                let test = "TEST"
+            //                return
+            //            }
         }
         
         store.exhaustivity = .off
         
         await store.send(.internal(.mergeSortTapped))
-        await store.send(.internal(.mergeSortResult(.success(.dummySorted(id: uuid)))))
+        await store.send(.internal(.mergeSortValueResponse(UnsortedElements.dummySorted(id: uuid).values.elements)))
         
-        XCTAssertNoDifference(store.state.array, UnsortedElements.dummySorted(id: uuid))
-        XCTAssertTrue(store.state.array.isSorted(order: .increasing))
+        XCTAssertNoDifference(store.state.arrayToSort, UnsortedElements.dummySorted(id: uuid))
+        XCTAssertTrue(store.state.arrayToSort.isSorted(order: .increasing))
     }
     
     func test__GIVEN__sorted_array__WHEN__mergeSort_returns_a_result__THEN__measure_the_computation_time_of_the_algorithm() async {
@@ -61,7 +62,7 @@ final class SortingFeatureTests: XCTestCase {
         let dummyResult: ContinuousClock.Instant.Duration = .milliseconds(200)
         
         let store = TestStore(
-            initialState: Sorting.State(array: UnsortedElements.dummySorted(id: uuid), timer: .zero),
+            initialState: Sorting.State(arrayToSort: UnsortedElements.dummySorted(id: uuid), timer: .zero),
             reducer: Sorting()
         )
         
@@ -69,24 +70,24 @@ final class SortingFeatureTests: XCTestCase {
         
         await store.send(.internal(.sortingTimer(dummyResult, .merge)))
         
-        await store.send(.internal(.mergeSortResult(.success(dummySorted))))
+        await store.send(.internal(.mergeSortValueResponse(dummySorted.values.elements)))
         
         XCTAssertNoDifference(dummyResult, store.state.timer)
-        XCTAssertNoDifference(dummySorted, store.state.array)
+        XCTAssertNoDifference(dummySorted, store.state.arrayToSort)
     }
     
     func test__GIVEN__sorted_array__WHEN__mergeSort_tapped__THEN__return_a_popover_error() async {
         let uuid = UUID()
-       let dummySorted = UnsortedElements.dummySorted(id: uuid)
         
         let store = TestStore(
-            initialState: Sorting.State(array: UnsortedElements.dummySorted(id: uuid)),
+            initialState: Sorting.State(arrayToSort: UnsortedElements.dummySorted(id: uuid)),
             reducer: Sorting()
         )
         
         await store.send(.internal(.mergeSortTapped))
         await store.receive(.internal(.toggleErrorPopover)) {
             $0.errorPopoverIsShowing = true
+            $0.errorPopoverText = "The array is already sorted \n Please reset the array"
         }
         
         XCTAssertTrue(store.state.errorPopoverIsShowing)
@@ -98,7 +99,7 @@ final class SortingFeatureTests: XCTestCase {
         let dummyResult: ContinuousClock.Instant.Duration = .milliseconds(200)
         
         let store = TestStore(
-            initialState: Sorting.State(array: UnsortedElements.dummySorted(id: uuid), timer: .zero),
+            initialState: Sorting.State(arrayToSort: UnsortedElements.dummySorted(id: uuid), timer: .zero),
             reducer: Sorting()
         )
         
@@ -115,33 +116,33 @@ final class SortingFeatureTests: XCTestCase {
         let dummy = UnsortedElements.fiveDummyElements(id: id)
         let numberOfElementsToGenerate = ActorIsolated<UInt?>(5)
         let store = TestStore(
-            initialState: Sorting.State(array: .dummyUnsorted(id: id)),
+            initialState: Sorting.State(arrayToSort: .dummyUnsorted(id: id)),
             reducer: Sorting()
         ) {
-                $0.elementGenerator.generate = {
-                    await numberOfElementsToGenerate.setValue($0)
-                    return dummy
+            $0.elementGenerator.generate = {
+                await numberOfElementsToGenerate.setValue($0)
+                return dummy
             }
             
         }
-        await store.send(.internal(.arraySizeStepperTapped(numberOfElementsToGenerate.value!)))
+        await store.send(.view(.arraySizeStepperTapped(numberOfElementsToGenerate.value!)))
         
         await store.receive(.internal(.generateElementsResult(.success(dummy)))) {
-            $0.array = dummy
+            $0.arrayToSort = dummy
         }
-         
-        XCTAssertNoDifference(store.state.array.values, dummy.values)
-        XCTAssertNoDifference(store.state.array.values.count, 5)
+        
+        XCTAssertNoDifference(store.state.arrayToSort.values, dummy.values)
+        XCTAssertNoDifference(store.state.arrayToSort.values.count, 5)
         
     }
     
-    func test__GIVEN__sorted_array__WHEN__rest_array_is_tapped__THEN__rest_array() async {
+    func test__GIVEN__sorted_array__WHEN__rest_array_is_tapped__THEN__reset_array() async {
         let uuid = UUID()
         let numberOfElementsToGenerate = ActorIsolated<UInt?>(nil)
         let errorPopoverIsShowing = ActorIsolated<Bool>(true)
         let dummy = UnsortedElements.dummy(id: uuid)
         let store = TestStore(
-            initialState: Sorting.State(array: UnsortedElements.dummySorted(id: uuid)),
+            initialState: Sorting.State(arrayToSort: UnsortedElements.dummySorted(id: uuid)),
             reducer: Sorting()
         ) {
             $0.elementGenerator.generate = {
@@ -150,10 +151,10 @@ final class SortingFeatureTests: XCTestCase {
             }
         }
         
-        await store.send(.internal(.resetArrayTapped))
+        await store.send(.view(.resetArrayTapped))
         
         await store.receive(.internal(.generateElementsResult(.success(dummy)))) {
-            $0.array = dummy
+            $0.arrayToSort = dummy
         }
     }
 }
@@ -169,7 +170,7 @@ extension UnsortedElements {
             .init(value: 5, id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!),
             .init(value: 12, id: UUID(uuidString: "00000000-0000-0000-0000-000000000003")!),
             .init(value: 62, id: UUID(uuidString: "00000000-0000-0000-0000-000000000004")!)
-                                     ])
+        ])
     }
 }
 

@@ -9,7 +9,8 @@ import Foundation
             mergeSort: unimplemented() ,
             bubbleSort: unimplemented(),
             selectionSort: unimplemented(),
-            insertionSort: unimplemented()
+            insertionSort: unimplemented(),
+            quickSort: unimplemented()
         )
     }
 

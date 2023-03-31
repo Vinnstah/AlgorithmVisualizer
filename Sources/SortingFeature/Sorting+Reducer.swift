@@ -9,9 +9,9 @@ public extension Sorting {
         case let .view(.arraySizeStepperTapped(count)):
             return generate(count: count)
             
-        case let .internal(.sortingTimer(time, type)):
+        case let .internal(.sortingTimer(time, sortingType)):
             state.timer = time
-            state.historicalSortingTimes.addTime(time: state.timer, type: type)
+            state.historicalSortingTimes.addTime(time: state.timer, type: sortingType)
             return .none
             
         case .internal(.mergeSortTapped):
@@ -147,8 +147,8 @@ public extension Sorting {
         case let .view(.animationDelayStepperTapped(value)):
             state.sortingAnimationDelay = value
             return .none
-        case .internal(.insertionSortTapped):
             
+        case .internal(.insertionSortTapped):
             guard !state.arrayToSort.isSorted(order: .increasing) else {
                 return .run { send in
                     await send(.internal(.toggleErrorPopover))
@@ -173,6 +173,7 @@ public extension Sorting {
             }
             .animation()
             .cancellable(id: CancelID.sortingAlgorithm)
+            
         case let .internal(.insertionSortValueResponse(values)):
             guard values.count != 0 else {
                 state.sortingInProgress = false
@@ -181,12 +182,42 @@ public extension Sorting {
             
             state.arrayToSort.values = IdentifiedArrayOf(uniqueElements: values)
             return .none
-        }
-    }
-    
-    private func sleep(delay: Double) -> Effect<Action> {
-        return .run { _ in
-            try await Task.sleep(for: .milliseconds(delay))
+            
+        case .internal(.quickSortTapped):
+            
+            guard !state.arrayToSort.isSorted(order: .increasing) else {
+                return .run { send in
+                    await send(.internal(.toggleErrorPopover))
+                }
+            }
+            
+            state.timer = .zero
+            state.sortingInProgress = true
+            
+            var listOfAllElementSwaps: [[UnsortedElements.Element]] = []
+            
+            state.timer = clock.measure {
+                sortingAlgorithms.quickSort(state.arrayToSort.values.elements) { swappedElementsList in
+                    listOfAllElementSwaps = swappedElementsList
+                }
+            }
+            return .run { [swappedElementsList = listOfAllElementSwaps, animationDelay = state.sortingAnimationDelay] send in
+                for swappedValues in swappedElementsList {
+                    await send(.internal(.insertionSortValueResponse(swappedValues)))
+                    try await Task.sleep(for: .milliseconds(animationDelay))
+                }
+            }
+            .animation()
+            .cancellable(id: CancelID.sortingAlgorithm)
+            
+        case let .internal(.quickSortValueResponse(values)):
+            guard values.count != 0 else {
+                state.sortingInProgress = false
+                return .none
+            }
+            
+            state.arrayToSort.values = IdentifiedArrayOf(uniqueElements: values)
+            return .none
         }
     }
     
@@ -199,6 +230,18 @@ public extension Sorting {
             )))
         }
     }
+    
+//    private func sendSortingAlgorithmResponse(listOfArrayChanges: [UnsortedElements], actionToSend: async Sorting.Action, delay: Double) -> Effect<Action> {
+//        
+//        return .run { [swappedElementsList = listOfArrayChanges, animationDelay = delay] send in
+//            for swappedValues in swappedElementsList {
+//                await actionToSend
+//                try await Task.sleep(for: .milliseconds(animationDelay))
+//            }
+//        }
+//        .animation()
+//        .cancellable(id: CancelID.sortingAlgorithm)
+//    }
 }
 
 private enum CancelID: Hashable {

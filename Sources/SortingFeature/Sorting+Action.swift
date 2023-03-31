@@ -19,6 +19,7 @@ public extension Sorting {
             case bubbleSortTapped
             case selectionSortTapped
             case insertionSortTapped
+            case quickSortTapped
             case onAppear
             case sortingTimer(ContinuousClock.Instant.Duration, SortingTimes.SortingTypes)
             case toggleErrorPopover
@@ -27,6 +28,7 @@ public extension Sorting {
             case selectionSortValueResponse([UnsortedElements.Element])
             case mergeSortValueResponse([UnsortedElements.Element])
             case insertionSortValueResponse([UnsortedElements.Element])
+            case quickSortValueResponse([UnsortedElements.Element])
         }
     }
 }

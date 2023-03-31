@@ -8,9 +8,11 @@ public struct SortingAlgorithms: Sendable {
     public typealias BubbleSort = @Sendable (UnsortedElements,_ callback: ([UnsortedElements]) -> Void) -> Void
     public typealias SelectionSort = @Sendable (inout UnsortedElements,_ callback: ([UnsortedElements]) -> Void) -> Void
     public typealias InsertionSort = @Sendable (inout UnsortedElements,_ callback: ([UnsortedElements]) -> Void) -> Void
+    public typealias QuickSort = @Sendable  ([UnsortedElements.Element],_ callback: ([[UnsortedElements.Element]]) -> Void) -> Void
 
     public var mergeSort: MergeSort
     public var bubbleSort: BubbleSort
     public var selectionSort: SelectionSort
     public var insertionSort: InsertionSort
+    public var quickSort: QuickSort
 }

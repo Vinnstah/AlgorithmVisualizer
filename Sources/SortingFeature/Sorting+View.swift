@@ -73,7 +73,15 @@ public extension Sorting {
                                     Text("Selection Sort")
                                 })
                                 .disabled(viewStore.state.sortingInProgress)
-                                Text("Quick Sort")
+                                
+                                Button(action: {
+                                    viewStore.send(.internal(.quickSortTapped), animation: .default)
+
+                                }, label: {
+                                    Text("Quick Sort")
+                                })
+                                .disabled(viewStore.state.sortingInProgress)
+                                
                             }
 
                             Charts(data: viewStore.state.arrayToSort.values.elements)
@@ -120,7 +128,8 @@ public extension Sorting.View {
                     )
 //                    .foregroundStyle(by: .value("isElementCurrentlyBeingSorted", data.sortingStatus))
                 }
-            }
+                    
+                }
             .chartForegroundStyleScale([
                 "SortingInProgress": .red,
                 "Unsorted": Color(.systemBlue),
