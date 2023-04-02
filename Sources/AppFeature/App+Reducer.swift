@@ -22,6 +22,8 @@ public extension App {
                     return .none
                 case .sorting:
                     return .none
+                case .pathfinding:
+                    return .none
                 }
             }
         }

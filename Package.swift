@@ -16,20 +16,29 @@ let package = Package(
             name: "AppFeature",
             targets: ["AppFeature"]),
         .library(
-            name: "UnsortedElements",
-            targets: ["UnsortedElements"]),
-        .library(
             name: "ElementGeneratorClient",
             targets: ["ElementGeneratorClient"]),
+            .library(
+            name: "Grid",
+            targets: ["Grid"]),
         .library(
             name: "HomeFeature",
             targets: ["HomeFeature"]),
+        .library(
+            name: "Node",
+            targets: ["Node"]),
+        .library(
+            name: "PathfindingFeature",
+            targets: ["PathfindingFeature"]),
         .library(
             name: "SortingAlgorithmsClient",
             targets: ["SortingAlgorithmsClient"]),
         .library(
             name: "SortingFeature",
             targets: ["SortingFeature"]),
+        .library(
+            name: "UnsortedElements",
+            targets: ["UnsortedElements"]),
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", branch: "prerelease/1.0"),
@@ -43,6 +52,7 @@ let package = Package(
             name: "AppFeature",
             dependencies: [
                 "HomeFeature",
+                "PathfindingFeature",
                 "SortingFeature",
                 tca
             ]),
@@ -63,12 +73,16 @@ let package = Package(
                     "UnsortedElements",
                     tca
                 ]),
-        
         .target(
-            name: "HomeFeature",
-            dependencies: [
-                tca
-            ]),
+        name: "Grid",
+        dependencies: [
+            "Node",
+        ]),
+            .target(
+                name: "HomeFeature",
+                dependencies: [
+                    tca
+                ]),
         .testTarget(
             name: "HomeFeatureTests",
             dependencies: ["HomeFeature"]),
@@ -80,16 +94,27 @@ let package = Package(
                     asyncExtension,
                     tca
                 ]),
-        
-        
         .target(
-            name: "SortingFeature",
+            name: "Node",
             dependencies: [
-                "UnsortedElements",
-                "ElementGeneratorClient",
-                "SortingAlgorithmsClient",
-                tca
             ]),
+        .target(
+            name: "PathfindingFeature",
+            dependencies: [
+                "Grid",
+                "Node",
+                tca,
+            ]),
+
+        
+            .target(
+                name: "SortingFeature",
+                dependencies: [
+                    "UnsortedElements",
+                    "ElementGeneratorClient",
+                    "SortingAlgorithmsClient",
+                    tca
+                ]),
         .testTarget(
             name: "SortingFeatureTests",
             dependencies: ["SortingFeature"]),

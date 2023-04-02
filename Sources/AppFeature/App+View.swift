@@ -3,6 +3,7 @@ import Foundation
 import HomeFeature
 import SortingFeature
 import SwiftUI
+import PathfindingFeature
 
 public extension App {
     struct View: SwiftUI.View {
@@ -39,6 +40,17 @@ public extension App {
                         Label("Sorting", systemImage: "chart.bar.xaxis")
                     }
                     .tag(Tab.sorting)
+                    
+                    Pathfinding.View(
+                        store: self.store.scope(
+                            state: \.pathfinding,
+                            action: App.Action.pathfinding
+                        )
+                    )
+                    .tabItem {
+                        Label("Pathfinding", systemImage: "chart.bar.xaxis")
+                    }
+                    .tag(Tab.pathfinding)
                 }
             }
         }

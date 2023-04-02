@@ -10,7 +10,7 @@ struct AlgorithmVisualizerApp: SwiftUI.App {
                 store: .init(
                     initialState: .init(),
                     reducer: App()
-                        ._printChanges(.actionLabels)
+                        ._printChanges()
                 )
             )
         }
