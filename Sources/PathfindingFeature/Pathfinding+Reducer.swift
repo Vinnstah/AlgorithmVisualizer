@@ -7,7 +7,6 @@ public extension Pathfinding {
         Reduce { state, action in
             switch action {
             case .onAppear:
-                print("1")
                 print(state.grid)
                 return .none
             }

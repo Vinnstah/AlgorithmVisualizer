@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Foundation
 
 public extension Pathfinding {
-    public enum Action: Equatable {
+     enum Action: Equatable {
         case onAppear
     }
 }
