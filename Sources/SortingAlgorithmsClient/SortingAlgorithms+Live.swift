@@ -51,7 +51,6 @@ extension SortingAlgorithms: DependencyKey {
                )
 //                )
                 sortingList.append(.init())
-                print(sortingList)
             callback(sortingList)
         }
         )

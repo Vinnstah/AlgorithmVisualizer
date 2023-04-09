@@ -3,6 +3,7 @@ import Foundation
 import ComposableArchitecture
 
 public extension Pathfinding {
+    @MainActor
     struct View: SwiftUI.View {
         public let store: StoreOf<Pathfinding>
         
@@ -13,29 +14,37 @@ public extension Pathfinding {
         }
         
         public var body: some SwiftUI.View {
-            WithViewStore(self.store, observe: {$0}) { viewStore in
-                LazyVGrid(columns: .init(repeating: GridItem(.fixed(50), spacing: 100, alignment: .center), count: 10)) {
-                    ForEach(viewStore.state.grid.grid) { element in
-                        ZStack {
-                            Rectangle()
-                                .foregroundColor(.white)
-                                .frame(width: 75, height: 75, alignment: .center)
-                            fatalError("FIX SHAPE")
-                                .onTapGesture {
-                                    print(viewStore.grid.getIndex(id: element.id))
+            WithViewStore(self.store, observe: { $0 }) { viewStore in
+                VStack {
+                    Button(action: { viewStore.send(.bfs, animation: .default) }, label: { Text("BFS")})
+                    LazyVGrid(columns: .init(repeating: GridItem(.fixed(75)), count: 10)) {
+                        ForEach(viewStore.state.grid.nodes) { node in
+                            ZStack {
+                                if viewStore.state.shortestPath.contains(where: { $0 == node}) {
+                                    Rectangle()
+                                        .foregroundColor(viewStore.state.shortestPath.contains(where: { $0 == node}) ? .green : .white)
+                                    .frame(width: 75, height: 75, alignment: .center)
+                                } else {
+                                    Rectangle()
+                                        .foregroundColor(viewStore.state.visitedNodes.contains(where: { $0 == node}) ? .indigo : .white)
+                                        .frame(width: 75, height: 75, alignment: .center)
                                 }
-                            if element.isStartingNode {
-                                Image(systemName: "circle")
-                            }
-                            if element.isEndNode {
-                                Image(systemName: "house")
+                                if node.isStartingNode {
+                                    Image(systemName: "house")
+                                        .foregroundColor(.black)
+                                        .font(.system(size: 30))
+                                }
+                                if node.isEndNode {
+                                    Image(systemName: "flag")
+                                        .foregroundColor(.black)
+                                        .font(.system(size: 30))
+                                }
                             }
                         }
                     }
                 }
                 .onAppear {
                     viewStore.send(.onAppear)
-                    print(viewStore.state.grid)
                 }
             }
         }

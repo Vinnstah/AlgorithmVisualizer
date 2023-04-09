@@ -16,7 +16,6 @@ public func _insertionSort(
         if unsortedElementIndex == 0 {
             sortedArray.values.append(arrayToSort.values.elements[unsortedElementIndex])
         }
-        print(unsortedElementIndex)
         for sortedElementIndex in sortedArray.values.indices {
             guard !sortedArray.values.isEmpty else {
                 sortedArray.values.append(arrayToSort.values.elements[unsortedElementIndex])

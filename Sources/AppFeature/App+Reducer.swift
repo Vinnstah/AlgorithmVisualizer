@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Foundation
 import HomeFeature
 import SortingFeature
+import PathfindingFeature
 
 public extension App {
     var body: some Reducer<State, Action> {
@@ -11,6 +12,9 @@ public extension App {
             }
             Scope(state: \State.sorting, action: /Action.sorting) {
                 Sorting()
+            }
+            Scope(state: \State.pathfinding, action: /Action.pathfinding) {
+                Pathfinding()
             }
             Reduce { state, action in
                 switch action {

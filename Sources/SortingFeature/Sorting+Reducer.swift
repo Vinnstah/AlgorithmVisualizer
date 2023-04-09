@@ -99,8 +99,8 @@ public extension Sorting {
             
             return .run { [swappedElementsList = listOfAllElementSwaps, animationDelay = state.sortingAnimationDelay] send in
                 for swappedValues in swappedElementsList {
-                    await send(.internal(.selectionSortValueResponse(swappedValues.values.elements)))
                     try await Task.sleep(for: .milliseconds(animationDelay))
+                    await send(.internal(.selectionSortValueResponse(swappedValues.values.elements)))
                 }
             }
             .animation()
@@ -230,18 +230,6 @@ public extension Sorting {
             )))
         }
     }
-    
-//    private func sendSortingAlgorithmResponse(listOfArrayChanges: [UnsortedElements], actionToSend: async Sorting.Action, delay: Double) -> Effect<Action> {
-//        
-//        return .run { [swappedElementsList = listOfArrayChanges, animationDelay = delay] send in
-//            for swappedValues in swappedElementsList {
-//                await actionToSend
-//                try await Task.sleep(for: .milliseconds(animationDelay))
-//            }
-//        }
-//        .animation()
-//        .cancellable(id: CancelID.sortingAlgorithm)
-//    }
 }
 
 private enum CancelID: Hashable {

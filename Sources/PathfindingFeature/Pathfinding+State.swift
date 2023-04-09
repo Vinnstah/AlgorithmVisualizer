@@ -10,40 +10,22 @@ public struct Pathfinding: Reducer {
 public extension Pathfinding {
     
     struct State: Equatable {
-        //        public var grid: [Node]
-        //
-        //        public init(grid: [Node] = nodeGenerator(count: 100))
-        //        {
-        //            self.grid = grid
-        //        }
-        
         public var grid: Grid
-        public var checkedNodes: Set<UUID>
+        public var visitedNodes: [Node]
+        public var pathfindingAnimationDelay: Double
+        public var shortestPath: [Node]
         
         public init(
-            grid: Grid = Grid(grid: nodeGenerator(count: 100)),
-            checkedNodes: Set<UUID> = []
+            grid: Grid = Grid(nodes: nodeGenerator(count: 100)),
+            visitedNodes: [Node] = [],
+            pathfindingAnimationDelay: Double = 100,
+            shortestPath: [Node] = []
         ) {
             self.grid = grid
-            self.checkedNodes = checkedNodes
+            self.visitedNodes = visitedNodes
+            self.pathfindingAnimationDelay = pathfindingAnimationDelay
+            self.shortestPath = shortestPath
         }
     }
 }
 
-public struct Grid: Equatable {
-    public static func == (lhs: Grid, rhs: Grid) -> Bool {
-        lhs.grid[0].id == rhs.grid[0].id
-    }
-    
-    var grid: [Node]
-    let onTap: () -> Void
-    
-    public init(grid: [Node], onTap: @escaping () -> Void = {} ) {
-        self.grid = grid
-        self.onTap = onTap
-    }
-    
-    public func getIndex(id: UUID) -> Int {
-        return self.grid.firstIndex(where: { $0.id == id })!
-    }
-}
