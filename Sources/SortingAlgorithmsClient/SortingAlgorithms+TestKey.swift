@@ -6,11 +6,11 @@ import Foundation
 
     public extension SortingAlgorithms {
         static let test = Self(
-            mergeSort: unimplemented() ,
-            bubbleSort: unimplemented(),
-            selectionSort: unimplemented(),
-            insertionSort: unimplemented(),
-            quickSort: unimplemented()
+            mergeSort: { _,_  in },
+            bubbleSort: { _,_  in },
+            selectionSort: { _,_  in },
+            insertionSort: { _,_  in },
+            quickSort: { _,_  in }
         )
     }
 

@@ -11,23 +11,23 @@ public extension Pathfinding {
             case .onAppear:
                 return .none
             case .bfs:
+                state.pathfindingInProgress = true
                 var queue: Queue = .init(elements: [state.grid.nodes[0]])
                 var listOfAllVisitedNodes: [Node] = []
                 var grid = state.grid
                 var firstNode = queue.elements[0]
                 
-                breatdhFirstSearch(
+              _ = breatdhFirstSearch(
                     grid: &grid,
                     node: &firstNode,
-                    visitedNodes: &state.visitedNodes,
+                    visitedNodes: &listOfAllVisitedNodes,
                     queue: &queue
-                ) { nodes in
-                    listOfAllVisitedNodes = nodes
-                }
+                )
+                
                 return .run { [visitedNodes = listOfAllVisitedNodes, delay = state.pathfindingAnimationDelay] send in
                     for node in visitedNodes {
-//                                                try await Task.sleep(for: .milliseconds(delay))
-                        await send(.pathfindingValueResponse(node))
+                        await send(.pathfindingValueResponse(node), animation: .default)
+                        try await Task.sleep(for: .milliseconds(delay))
                     }
                 }
                 .animation()
@@ -38,24 +38,36 @@ public extension Pathfinding {
                 guard !node.isEndNode else {
                     var shortestPath: [Node] = []
                     shortestPath.append(node)
-                    state.shortestPath = appendNeighbors(shortestPath: &shortestPath, node: node, grid: state.grid)
+                    state.shortestPath = calculateShortestPath(shortestPath: &shortestPath, node: node, grid: state.grid)
+                    state.pathfindingInProgress = false
                     return .none
                         .animation()
                 }
-                state.grid.nodes[state.grid.getIndex(node: node)] = node
+                
+                state.visitedNodes.append(node)
+                return .none
+                    .animation()
+            case let .pathfindingAnimationDelayTapped(delay):
+                state.pathfindingAnimationDelay = delay
                 return .none
             }
         }
     }
 }
 
-public func appendNeighbors(shortestPath: inout [Node], node: Node, grid: Grid) -> [Node] {
+public func calculateShortestPath(
+    shortestPath: inout [Node],
+    node: Node,
+    grid: Grid
+) -> [Node] {
     guard !node.isStartingNode else {
         return shortestPath
     }
     shortestPath.append(grid.nodes[node.neighbors[0]])
-    return appendNeighbors(shortestPath: &shortestPath, node: grid.nodes[node.neighbors[0]], grid: grid)
+    
+    return calculateShortestPath(shortestPath: &shortestPath, node: grid.nodes[node.neighbors[0]], grid: grid)
 }
+
 private enum CancelID: Hashable {
     case pathfinding
 }
@@ -65,12 +77,11 @@ public func breatdhFirstSearch(
     grid: inout Grid,
     node: inout Node,
     visitedNodes: inout [Node],
-    queue: inout Queue,
-    callback: ([Node]) -> Void) -> Node {
+    queue: inout Queue
+) -> Node {
         
         guard !node.isEndNode && !queue.elements.isEmpty else {
             visitedNodes.append(node)
-            callback(visitedNodes)
             return node
         }
         
@@ -84,13 +95,12 @@ public func breatdhFirstSearch(
             }
             queue.popFirst()
             node = queue.elements[0]
-            return breatdhFirstSearch(grid: &grid, node: &node, visitedNodes: &visitedNodes, queue: &queue, callback: callback)
+            return breatdhFirstSearch(grid: &grid, node: &node, visitedNodes: &visitedNodes, queue: &queue)
         }
         queue.popFirst()
         guard !queue.elements.isEmpty else {
-            callback(visitedNodes)
             return node
         }
         node = queue.elements[0]
-        return breatdhFirstSearch(grid: &grid, node: &node, visitedNodes: &visitedNodes, queue: &queue, callback: callback)
+        return breatdhFirstSearch(grid: &grid, node: &node, visitedNodes: &visitedNodes, queue: &queue)
     }
