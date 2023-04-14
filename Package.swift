@@ -28,6 +28,9 @@ let package = Package(
             name: "Node",
             targets: ["Node"]),
         .library(
+            name: "PathfindingClient",
+            targets: ["PathfindingClient"]),
+        .library(
             name: "PathfindingFeature",
             targets: ["PathfindingFeature"]),
         .library(
@@ -99,10 +102,18 @@ let package = Package(
             dependencies: [
             ]),
         .target(
+            name: "PathfindingClient",
+            dependencies: [
+                "Grid",
+                "Node",
+                tca,
+            ]),
+        .target(
             name: "PathfindingFeature",
             dependencies: [
                 "Grid",
                 "Node",
+                "PathfindingClient",
                 tca,
             ]),
 

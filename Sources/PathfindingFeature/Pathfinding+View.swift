@@ -2,9 +2,10 @@ import SwiftUI
 import Foundation
 import ComposableArchitecture
 
-public extension Pathfinding {
+extension Pathfinding {
+    
     @MainActor
-    struct View: SwiftUI.View {
+    public struct View: SwiftUI.View {
         public let store: StoreOf<Pathfinding>
         
         public init(
@@ -23,7 +24,7 @@ public extension Pathfinding {
                                 send: { .pathfindingAnimationDelayTapped($0) }
                             ), pathfindingInProgress: viewStore.state.pathfindingInProgress)
                             .frame(width: geo.size.width/3)
-                            Button(action: { viewStore.send(.bfs, animation: .default) }, label: { Text("BFS")})
+                            Button(action: { viewStore.send(.view(.bfsTapped), animation: .default) }, label: { Text("BFS")})
                         }
                         LazyVGrid(columns: .init(repeating: GridItem(.fixed(75)), count: 10)) {
                             ForEach(viewStore.state.grid.nodes) { node in
@@ -52,29 +53,32 @@ public extension Pathfinding {
                         }
                     }
                     .onAppear {
-                        viewStore.send(.onAppear)
+                        viewStore.send(.view(.appeared))
                     }
                 }
             }
         }
     }
 }
-public func animationDelay(
-    animationDelayValue: Binding<Double>,
-    pathfindingInProgress: Bool
-) -> some SwiftUI.View {
-    VStack {
-        Text("Animation delay ms: \(Int(animationDelayValue.wrappedValue))")
-        HStack {
-            Slider(
-                value: .init(
-                    get: { animationDelayValue.wrappedValue },
-                    set: { animationDelayValue.wrappedValue = $0 }
-                ), in: 1 ... 1000, step: 10.0
-            )
-            .disabled(pathfindingInProgress)
-            Spacer()
+extension Pathfinding.View {
+    
+    public func animationDelay(
+        animationDelayValue: Binding<Double>,
+        pathfindingInProgress: Bool
+    ) -> some SwiftUI.View {
+        
+        VStack {
+            Text("Animation delay ms: \(Int(animationDelayValue.wrappedValue))")
+            HStack {
+                Slider(
+                    value: .init(
+                        get: { animationDelayValue.wrappedValue },
+                        set: { animationDelayValue.wrappedValue = $0 }
+                    ), in: 1 ... 1000, step: 10.0
+                )
+                .disabled(pathfindingInProgress)
+                Spacer()
+            }
         }
     }
 }
-

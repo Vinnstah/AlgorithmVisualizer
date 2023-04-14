@@ -5,10 +5,14 @@ import Grid
 
 public extension Pathfinding {
     enum Action: Equatable {
-//        enum View: Equatable
-        case onAppear
-        case bfs
+        case view(ViewAction)
         case pathfindingValueResponse(Node)
         case pathfindingAnimationDelayTapped(Double)
+        
+       public enum ViewAction: Equatable {
+            case bfsTapped
+            case appeared
+            
+        }
     }
 }
