@@ -1,19 +1,17 @@
-
 import Foundation
 import Node
 import Grid
-
     
     public func _breatdhFirstSearch(
         grid: inout Grid,
         node: inout Node,
         visitedNodes: inout [Node],
         queue: inout Queue
-    ) -> Node {
+    ) -> Void {
         
         guard !node.isEndNode && !queue.elements.isEmpty else {
             visitedNodes.append(node)
-            return node
+            return
         }
         
         while !queue.elements.isEmpty && !visitedNodes.contains(where: { $0 == node }) {
@@ -30,7 +28,7 @@ import Grid
         }
         queue.popFirst()
         guard !queue.elements.isEmpty else {
-            return node
+            return
         }
         node = queue.elements[0]
         return _breatdhFirstSearch(grid: &grid, node: &node, visitedNodes: &visitedNodes, queue: &queue)

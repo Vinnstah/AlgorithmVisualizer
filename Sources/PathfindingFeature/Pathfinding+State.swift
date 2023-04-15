@@ -2,9 +2,11 @@ import ComposableArchitecture
 import Foundation
 import Grid
 import Node
+import PathfindingClient
 
 public struct Pathfinding: Reducer {
     public init() {}
+    @Dependency(\.pathfindingClient) var pathfindingClient
 }
 
 public extension Pathfinding {
