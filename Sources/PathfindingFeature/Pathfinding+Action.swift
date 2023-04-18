@@ -11,7 +11,9 @@ public extension Pathfinding {
         
        public enum ViewAction: Equatable {
             case bfsTapped
+            case dfsTapped       
             case appeared
+           case resetGridTapped
             
         }
     }

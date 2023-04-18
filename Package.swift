@@ -80,6 +80,7 @@ let package = Package(
         name: "Grid",
         dependencies: [
             "Node",
+            tca,
         ]),
             .target(
                 name: "HomeFeature",

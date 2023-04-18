@@ -19,12 +19,21 @@ extension Pathfinding {
                 GeometryReader { geo in
                     VStack {
                         HStack {
+                            Button(action: { viewStore.send(.view(.bfsTapped), animation: .default) }, label: { Text("BFS")})
+                                .disabled(viewStore.state.pathfindingInProgress)
+                            
+                            Button(action: { viewStore.send(.view(.dfsTapped), animation: .default) }, label: { Text("DFS")})
+                                .disabled(viewStore.state.pathfindingInProgress)
+                            
+                            Button(action: { viewStore.send(.view(.resetGridTapped), animation: .default) }, label: { Text("Reset")})
+                        }
+                        HStack {
                             animationDelay(animationDelayValue: viewStore.binding(
                                 get: { $0.pathfindingAnimationDelay },
                                 send: { .pathfindingAnimationDelayTapped($0) }
                             ), pathfindingInProgress: viewStore.state.pathfindingInProgress)
                             .frame(width: geo.size.width/3)
-                            Button(action: { viewStore.send(.view(.bfsTapped), animation: .default) }, label: { Text("BFS")})
+                            
                         }
                         LazyVGrid(columns: .init(repeating: GridItem(.fixed(75)), count: 10)) {
                             ForEach(viewStore.state.grid.nodes) { node in
@@ -45,6 +54,11 @@ extension Pathfinding {
                                     }
                                     if node.isEndNode {
                                         Image(systemName: "flag")
+                                            .foregroundColor(.black)
+                                            .font(.system(size: 30))
+                                    }
+                                    if node.blocked! {
+                                        Image(systemName: "square")
                                             .foregroundColor(.black)
                                             .font(.system(size: 30))
                                     }

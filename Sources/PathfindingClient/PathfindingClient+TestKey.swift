@@ -6,7 +6,8 @@ import Foundation
 
     public extension PathfindingClient {
         static let test = Self(
-            breadthFirstSearch: unimplemented("BFS"))
+            breadthFirstSearch: unimplemented("BFS"),
+            depthFirstSearch: unimplemented("BFS"))
     }
 
     extension PathfindingClient: TestDependencyKey {

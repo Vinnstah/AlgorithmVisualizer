@@ -13,6 +13,14 @@ extension PathfindingClient: DependencyKey {
                     visitedNodes: &visitedNodes,
                     queue: &queue
                 )
+            },
+            depthFirstSearch: { grid, node, visitedNodes, queue in
+                return _depthFirstSearch(
+                    grid: &grid,
+                    node: &node,
+                    visitedNodes: &visitedNodes,
+                    queue: &queue
+                )
             }
         )
     }

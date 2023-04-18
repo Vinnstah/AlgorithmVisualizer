@@ -13,16 +13,16 @@ public extension Pathfinding {
     
     struct State: Equatable {
         public var grid: Grid
-        public var visitedNodes: [Node]
+        public var visitedNodes: IdentifiedArrayOf<Node>
         public var pathfindingAnimationDelay: Double
-        public var shortestPath: [Node]
+        public var shortestPath: IdentifiedArrayOf<Node>
         public var pathfindingInProgress: Bool
         
         public init(
             grid: Grid = Grid(nodes: nodeGenerator(count: 100)),
-            visitedNodes: [Node] = [],
+            visitedNodes: IdentifiedArrayOf<Node> = [],
             pathfindingAnimationDelay: Double = 100,
-            shortestPath: [Node] = [],
+            shortestPath: IdentifiedArrayOf<Node> = [],
             pathfindingInProgress: Bool = false
         ) {
             self.grid = grid
