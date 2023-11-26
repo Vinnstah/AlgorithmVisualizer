@@ -1,3 +1,3 @@
 # AlgorithmVisualizer
 
-A description of this package.
+A Swift application for MacOS to visualize different sorting and pathfinding algorithms.
